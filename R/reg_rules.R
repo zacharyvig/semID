@@ -1,5 +1,5 @@
 # Environment to store simultaneous equation model rules
-.reg_rules <- new.env(parent = emptyenv())
+.reg_rules <- list()
 
 #' Seemingly Unrelated Regressions rule
 #' @name sur_rule
@@ -11,6 +11,7 @@
 #' @keywords internal
 #' @author Zach Vig
 .reg_rules$sur_rule <- function(partable) {
+  rule <- "SUR Rule"
   # retrieve attributes and variable names
   lavpta <- lav_partable_attributes(partable)
   vnames <- lavpta$vnames
@@ -21,8 +22,7 @@
   # check if endogenous vars appear as exogenous vars
   nox_ox <- ov.nox %in% ov.ox; names(nox_ox) <- ov.nox
   # build output
-  rule <- "SUR Rule"
-  if (any(!is.na(nox_ox))) {
+  if (any(nox_ox[!is.na(nox_ox)])) {
     pass <- FALSE
     warn <- paste(
       "One or more endogenous variables appear as regression predictors:",
@@ -51,6 +51,7 @@
 #' @keywords internal
 #' @author Zach Vig
 .reg_rules$fully_recursive_rule <- function(partable) {
+  rule <- "Fully Recursive Rule"
   # retrieve attributes and variable names
   lavpta <- lav_partable_attributes(partable)
   vnames <- lavpta$vnames
@@ -69,7 +70,6 @@
   covs <- subset(partable, op == "~~" & lhs != rhs & free > 0)
   cor_err.ov.nox <- with(covs, lhs %in% ov.nox & rhs %in% ov.nox)
   # build output
-  rule <- "Fully Recursive Rule"
   if (isFALSE(recursive)) {
     pass <- FALSE
     warn <- "Feedback loops exist in the model, i.e., the model is non-recursive"
@@ -103,6 +103,7 @@
 #' @keywords internal
 #' @author Zach Vig
 .reg_rules$recursive_corr_err_rule <- function(partable) {
+  rule <- "Recur/Corr Err Rule"
   # retrieve attributes and variable names
   lavpta <- lav_partable_attributes(partable)
   vnames <- lavpta$vnames
@@ -127,7 +128,6 @@
     }, simplify = TRUE)
   )
   # build output
-  rule <- "Recur/Corr Err Rule"
   if (isFALSE(recursive)) {
     pass <- FALSE
     warn <- "Feedback loops exist in the model, i.e., the model is non-recursive"

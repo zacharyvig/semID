@@ -1,5 +1,5 @@
 # Environment to store confirmatory factor analysis model rules
-.cfa_rules <- new.env(parent = emptyenv())
+.cfa_rules <- list()
 
 #' Three Indicator rules
 #' @name three_indicator_rule
@@ -49,7 +49,7 @@
   # uncorrelated errors
   covs <- subset(partable, op == "~~" & lhs != rhs & free > 0)
   cor_err.ind <- sapply(ind.fof, function(ind) {
-    with(covs, any(lhs == ind & rhs %in% ind | rhs == ind & lhs %in% ind))
+    with(covs, any(lhs == ind & rhs %in% ind.fof | rhs == ind & lhs %in% ind.fof))
   }, simplify = TRUE)
   # warnings
   warn <- c()
@@ -136,7 +136,7 @@
   # uncorrelated errors
   covs <- subset(partable, op == "~~" & lhs != rhs & free > 0)
   cor_err.ind <- sapply(ind.fof, function(ind) {
-    with(covs, any(lhs == ind & rhs %in% lv | rhs == ind & lhs %in% lv))
+    with(covs, any(lhs == ind & rhs %in% ind.fof | rhs == ind & lhs %in% ind.fof))
   }, simplify = TRUE)
   # lv variances/correlations
   cor.lv <- sapply(lv[idx.fof], function(var) {

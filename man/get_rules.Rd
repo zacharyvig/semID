@@ -11,10 +11,10 @@ get_rules(rule = "*", model_type = "*")
 in the package. Use "*" to get all rules (or all rules of the defined
 model type)}
 
-\item{model_type}{A string specifying the model type from which to get
-rules. Types include "reg" (simultaneous equation models/regression models),
-"cfa" (confirmatory factor analysis models), or "sem" (general SEM models).
-Use "*" to get from all model types}
+\item{model_type}{A string specifying the model sub-type from which to get
+rules. Sub-types include "reg" (simultaneous equation models/regression models) and
+"cfa" (confirmatory factor analysis models). Use "sem" to get rules that apply
+to all structural equation models. Use "*" to get all rules in the package.}
 }
 \value{
 A list object with the rule function(s) specified by the user.

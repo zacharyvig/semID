@@ -26,10 +26,10 @@ check_recursion <- function(partable, base, comp) {
 #' @param rule A string specifying the name of the rule as it's defined
 #'  in the package. Use "*" to get all rules (or all rules of the defined
 #'  model type)
-#' @param model_type A string specifying the model type from which to get
-#'  rules. Types include "reg" (simultaneous equation models/regression models),
-#'  "cfa" (confirmatory factor analysis models), or "sem" (general SEM models).
-#'  Use "*" to get from all model types
+#' @param model_type A string specifying the model sub-type from which to get
+#'  rules. Sub-types include "reg" (simultaneous equation models/regression models) and
+#'  "cfa" (confirmatory factor analysis models). Use "sem" to get rules that apply
+#'  to all structural equation models. Use "*" to get all rules in the package.
 #'
 #' @return A list object with the rule function(s) specified by the user.
 #'
@@ -41,22 +41,18 @@ get_rules <- function(rule = "*", model_type = "*") {
   )
   if (model_type == "*") {
     rules <- c(
-      as.list(.any_rules),
-      as.list(.reg_rules),
-      as.list(.cfa_rules),
-      as.list(.sem_rules)
+      .sem_rules,
+      .reg_rules,
+      .cfa_rules
     )
   } else {
-    rules <- c(
-      as.list(.any_rules),
-      as.list(get(sprintf(".%s_rules", model_type)))
-    )
+    rules <- as.list(get(sprintf(".%s_rules", model_type)))
   }
   if (rule == "*") {
     return(rules)
   } else {
     stopifnot(
-      "Given rule does not exist (check `model_type`)" = !is.null(rules[[rule]])
+      "Specified rule does not exist (or check `model_type`)" = !is.null(rules[[rule]])
     )
     return(rules[[rule]])
   }

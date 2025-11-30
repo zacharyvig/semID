@@ -2,10 +2,13 @@
 #'
 #' ...
 #'
-#' @param model A character string model in \code{lavaan} syntax or a
-#'  \code{lavaan} parameter table.
+#' @param model A character string model in \code{lavaan} syntax, a
+#'  \code{lavaan} parameter table, or a fitted \code{lavaan} object.
 #' @param warn Logical. If \code{TRUE}, the output will include why a rule does
-#'  not pass.
+#'  not pass or is not applicable, along with any other helpful information.
+#' @param call A character string specifying the call you intend to use to fit
+#'  the model. This will ensure the correct model defaults are specified. Options
+#'  currently include "lavaan", "sem", or "cfa".
 #' @param ... Additional arguments passed to the \code{lavaanify} function from
 #'  \code{lavaan}. See \link[lavaan]{lavaanify} for more information.
 #'
@@ -20,35 +23,58 @@
 #'               speed   =~ x7 + x8 + x9 '
 #' id(HS.model, warn = TRUE, meanstructure = FALSE)
 #' @export
-id <- function(model = NULL, warn = TRUE, ...) {
+id <- function(model = NULL, warn = TRUE, call = "sem", ...) {
+  # Checks
+  stopifnot(
+    "Argument `warn` must be a logical" =
+      is.logical(warn)
+  )
+  stopifnot(
+    "Unknown `call` or `call` currently not supported" =
+      call %in% c("lavaan", "sem", "cfa")
+  )
+
   # STEP 0 - Parse input
-  dotdotdot <- list(...)
-
-  dotdotdot$model <- model
-  dotdotdot$warn <- TRUE
-  dotdotdot$debug <- FALSE
-
-  partable <- do.call(lavaanify, dotdotdot)
+  if (inherits(model, "lavaan")) {
+    partable <- as.data.frame(model@ParTable, stringsAsFactors = FALSE)
+  # check if already partable (from lav_partable)
+  } else if (is.list(model) && !is.null(model$lhs)) {
+    if (is.null(model$mod.idx)) {
+      partable <- model
+    }
+  } else {
+    args <- list(
+      model = model,
+      warn = TRUE,
+      debug = FALSE,
+      auto = (call != "lavaan"),
+      ...
+      )
+    partable <- do.call(lavaanify, args)
+  }
 
   # STEP 1 - Classify model
-  mod_type <- classify_model(partable)
+  model_type <- classify_model(partable)
 
-  if (is.na(mod_type) | mod_type == "mlm") {
+  if (is.na(model_type) | model_type == "mlm") {
     stop("This model type is not currently supported")
   }
 
-  rules <- c(
-    # STEP 2 - Evaluate general rules
-    lapply(
-      .any_rules, function(rule) do.call(rule, list(partable))
-    ),
-    # STEP 3 - Evaluate model type-specific rules
-    lapply(
-      get(paste0(".", mod_type, "_rules")),
-      function(rule) do.call(rule, list(partable))
+  # STEP 2 - Evaluate general rules
+  rules <- lapply(
+    get_rules(model_type = "sem"),
+    function(rule) do.call(rule, list(partable))
     )
-  )
-
+  # STEP 3 - Evaluate model type-specific rules (if applicable)
+  if (model_type %in% c("cfa", "reg")) {
+    rules <- c(
+      rules,
+      lapply(
+        get_rules(model_type = model_type),
+        function(rule) do.call(rule, list(partable))
+      )
+    )
+  }
   # STEP 4 - Print Rules (and Warnings)
   wind <- 56L
   names <- c(
@@ -111,8 +137,9 @@ id <- function(model = NULL, warn = TRUE, ...) {
     for (i in 1:widx) {
       w0 <- strwrap(wrns[i], width = wind - 4L)
       ls <- length(w0)
+      w0[1] <- paste0(sprintf("%s - ", i), w0[1])
       if (ls > 1L) {
-        w0 <- paste0(c(sprintf("%s - ", i), rep(strrep(" ", 4L), ls - 1L)), w0)
+        w0[2:ls] <- paste0(rep(strrep(" ", 4L), ls - 1L), w0[2:ls])
       }
       cat(w0, sep = "\n")
     }

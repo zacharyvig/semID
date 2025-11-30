@@ -2,16 +2,20 @@
 % Please edit documentation in R/id.R
 \name{id}
 \alias{id}
-\title{Evaluate common Structural Equation Model (SEM) identification rules.}
+\title{Evaluate common Structural Equation Model (SEM) identification rules}
 \usage{
-id(model = NULL, warn = TRUE, ...)
+id(model = NULL, warn = TRUE, call = "sem", ...)
 }
 \arguments{
-\item{model}{A character string model in \code{lavaan} syntax or a
-\code{lavaan} parameter table.}
+\item{model}{A character string model in \code{lavaan} syntax, a
+\code{lavaan} parameter table, or a fitted \code{lavaan} object.}
 
 \item{warn}{Logical. If \code{TRUE}, the output will include why a rule does
-not pass.}
+not pass or is not applicable, along with any other helpful information.}
+
+\item{call}{A character string specifying the call you intend to use to fit
+the model. This will ensure the correct model defaults are specified. Options
+currently include "lavaan", "sem", or "cfa".}
 
 \item{...}{Additional arguments passed to the \code{lavaanify} function from
 \code{lavaan}. See \link[lavaan]{lavaanify} for more information.}
