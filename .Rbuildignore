@@ -1,0 +1,7 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^local$
+^desktop.ini$
+^\.github$
+^README\.Rmd$
