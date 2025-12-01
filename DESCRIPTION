@@ -9,11 +9,11 @@ Authors@R: c(
       role = c("aut", "cre")
     )
   )
-Description: In order for structural equation model (SEM) estimates to be reliable,
-  every parameter in the model must be identified, i.e., there should be at least
-  as many known statistics as unknown parameters. The SEM literature has a plethora of rules 
-  to help check if a model is identified, many of which are implemented in this package.
-License: MIT + file LICENSE
+Description: In order for structural equation model (SEM) estimation to be reliable,
+  the model must be identified, i.e., every parameter in the model must have a unique 
+  solution. The SEM literature has a plethora of rules to help check if a model is identified, 
+  many of which are implemented in this package.
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.3.2

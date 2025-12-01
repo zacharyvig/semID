@@ -15,10 +15,19 @@
   vnames <- lavpta$vnames
   # tally variables assuming one block
   lv <- vnames$lv[[1]]
-  ov <- vnames$ov.ind[[1]]
+  ov.ind <- vnames$ov.ind[[1]]
+  if (length(lv) == 0) {
+    out <- list(
+      rule = rule,
+      pass = NA,
+      cond = NA,
+      warn = "This rule only applies when there are latent variables in the model"
+    )
+    return(out)
+  }
   # tally indicators per lv
   nov.ind <- sapply(lv, function(var){
-    out <- with(partable, rhs[lhs == var & op == "=~" & rhs %in% ov])
+    out <- with(partable, rhs[lhs == var & rhs %in% ov.ind])
     return(length(out))
   }, simplify = TRUE)
   # check for higher order cfa
@@ -32,14 +41,14 @@
       rule = rule,
       pass = NA,
       cond = NA,
-      warn = paste("Some first order factors have less than three indicators:",
+      warn = paste("This rule only applies when all latent variables have more than three indicators:",
               paste(lv[nov.ind < 3 & nlv.ind == 0], collapse = ", "))
     )
     return(out)
   }
   # first order factors
   idx.fof <- which(nlv.ind == 0)
-  ind.fof <- with(partable, rhs[lhs %in% lv[idx.fof] & op == "=~"])
+  ind.fof <- unique(with(partable, rhs[lhs %in% lv[idx.fof] & op == "=~"]))
   # factor complexity 1
   fc1.fof <- sapply(ind.fof, function(ind) {
     length(
@@ -59,16 +68,14 @@
   } else {
     cond <- "S"
   }
+  pass <- isTRUE(all(fc1.fof) & all(!cor_err.ind))
   if (any(!fc1.fof)) {
-    pass <- FALSE
     warn <- c(warn, paste("Some indicators have a factor complexity greater than one:",
               paste(ind.fof[!fc1.fof], collapse = ", ")))
-  } else if (any(cor_err.ind)) {
-    pass <- FALSE
+  }
+  if (any(cor_err.ind)) {
     warn <- c(warn, paste("Some indicators have correlated errors:",
               paste(ind.fof[cor_err.ind], collapse = ", ")))
-  } else {
-    pass <- TRUE
   }
   if(length(warn) == 0) warn <- NA
   out <- list(
@@ -95,19 +102,28 @@
   vnames <- lavpta$vnames
   # tally variables assuming one block
   lv <- vnames$lv[[1]]
-  ov <- vnames$ov.ind[[1]]
+  ov.ind <- vnames$ov.ind[[1]]
+  if (length(lv) == 0) {
+    out <- list(
+      rule = rule,
+      pass = NA,
+      cond = NA,
+      warn = "This rule only applies when there are latent variables in the model"
+    )
+    return(out)
+  }
   if (length(lv) < 2) {
     out <- list(
       rule = rule,
       pass = NA,
       cond = NA,
-      warn = "The model contains less than two latent variables"
+      warn = "This rule only applies when more than one latent variable is in the model"
     )
     return(out)
   }
   # tally indicators per lv
   nov.ind <- sapply(lv, function(var){
-    out <- with(partable, rhs[lhs == var & op == "=~" & rhs %in% ov])
+    out <- with(partable, rhs[lhs == var & rhs %in% ov.ind])
     return(length(out))
   }, simplify = TRUE)
   # check for higher order cfa
@@ -120,7 +136,7 @@
     out <- list(
       rule = rule,
       pass = NA,
-      warn = paste("Some first order factors have less than two indicators:",
+      warn = paste("This rule only applies when all latent variables have more than two indicators:",
                    paste(lv[nov.ind < 2 & nlv.ind == 0], collapse = ", ")),
       cond = NA
     )
@@ -128,7 +144,7 @@
   }
   # first order factors
   idx.fof <- which(nlv.ind == 0)
-  ind.fof <- with(partable, rhs[lhs %in% lv[idx.fof] & op == "=~"])
+  ind.fof <- unique(with(partable, rhs[lhs %in% lv[idx.fof] & op == "=~"]))
   # factor complexity 1
   fc1.fof <- sapply(ind.fof, function(ind) {
     length(with(partable, lhs[rhs == ind & op == "=~"])) == 1
@@ -150,20 +166,18 @@
   } else {
     cond <- "S"
   }
+  pass <- isTRUE(all(fc1.fof) & all(!cor_err.ind) & all(cor.lv))
   if (any(!fc1.fof)) {
-    pass <- FALSE; viol <- ind.fof[!fc1.fof]
     warn <- c(warn, paste("Some indicators have a factor complexity greater than one:",
-                          paste(viol, collapse = ", ")))
-  } else if (any(cor_err.ind)) {
-    pass <- FALSE; viol <- ind.fof[cor_err.ind]
+                          paste(ind.fof[!fc1.fof], collapse = ", ")))
+  }
+  if (any(cor_err.ind)) {
     warn <- c(warn, paste("Some indicators have correlated errors:",
-                          paste(viol, collapse = ", ")))
-  } else if (any(!cor.lv)) {
-    pass <- FALSE
+                          paste(ind.fof[cor_err.ind], collapse = ", ")))
+  }
+  if (any(!cor.lv)) {
     warn <- c(warn, paste("Some latent variables are not correlated with another latent variable:",
               paste(lv[idx.fof & !cor.lv] , collapse = ", ")))
-  } else {
-    pass <- TRUE
   }
   if(length(warn) == 0) warn <- NA
   out <- list(

@@ -1,4 +1,4 @@
-# Environment to store simultaneous equation model rules
+# Environment to store simultaneous equation model/regression rules
 .reg_rules <- list()
 
 #' Seemingly Unrelated Regressions rule

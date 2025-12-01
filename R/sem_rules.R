@@ -20,7 +20,7 @@
   pass <- isTRUE(npar <= ndat)
   warn <- ifelse(
     pass, NA,
-    sprintf("The number of free parameters (%s) exceeds the number of means/variances/covariances (%s)", npar, ndat)
+    sprintf("The number of free parameters (x%s) exceeds the number of means/variances/covariances (x%s)", npar, ndat)
   )
   out <- list(
     rule = rule,
@@ -52,7 +52,7 @@
       rule = rule,
       pass = NA,
       cond = NA,
-      warn = "The model contains no latent variables"
+      warn = "This rule only applies when there are latent variables in the model"
     )
     return(out)
   }
@@ -91,7 +91,7 @@
       rule = rule,
       pass = NA,
       cond = NA,
-      warn = "There are no applicable variables (free variance & free downstream disturbance variances) to which to apply the rule"
+      warn = "There are no variables (with free variance & free downstream disturbance variances) to which to apply the rule"
     )
     return(out)
   } else {
@@ -147,31 +147,31 @@
 #' @keywords internal
 #' @author Zach Vig
 .sem_rules$exogenous_x_rule <- function(partable) {
-  rule <- "Exogenous X Rule"
+  rule <- "Exog X Rule"
   # retrieve attributes and variable names
   lavpta <- lav_partable_attributes(partable)
   vnames <- lavpta$vnames
   # tally variables assuming one block
   lv <- vnames$lv[[1]]
-  ov <- vnames$ov.ind[[1]]
+  ov <- vnames$ov[[1]]
   if (length(lv) == 0) {
     out <- list(
       rule = rule,
       pass = NA,
       cond = NA,
-      warn = "The model contains no latent variables"
+      warn = "This rule only applies when there are latent variables in the model"
     )
     return(out)
   }
   # build output
   n.ind <- sapply(lv, function (var) {
     sum(
-      with(partable, var == lhs & any(ov %in% rhs) & op == "=~")
+      with(partable, lhs == var & any(ov %in% rhs) & op == "=~")
     )
   }, simplify = TRUE)
   n.cind <- sapply(lv, function (var) {
     sum(
-      with(partable, var == lhs & any(ov %in% rhs) & op == "~")
+      with(partable, lhs == var & any(ov %in% rhs) & (op == "~" | op == "<~"))
     )
   }, simplify = TRUE)
   if (all(n.cind == 0)) {
@@ -179,7 +179,7 @@
       rule = rule,
       pass = NA,
       cond = NA,
-      warn = "This rule only applies when causal indicators are present"
+      warn = "This rule only applies when causal indicators are in the model"
     )
     return(out)
   }
@@ -193,15 +193,14 @@
       )
   } else {
     # TODO: finish multiple LV MIMIC rule
-    pass <- NA
-    cond <- NA
-    warn <- NA
+    pass <- cond <- NA
+    warn <- "This rule is currently not supported for multiple latent variables"
   }
   out <- list(
-    rule,
-    pass,
-    cond,
-    warn
+    rule = rule,
+    pass = pass,
+    cond = cond,
+    warn = warn
   )
   return(out)
 }

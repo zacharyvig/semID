@@ -65,8 +65,10 @@ id <- function(model = NULL, warn = TRUE, call = "sem", ...) {
     get_rules(model_type = "sem"),
     function(rule) do.call(rule, list(partable))
     )
+  nsem <- length(rules)
   # STEP 3 - Evaluate model type-specific rules (if applicable)
-  if (model_type %in% c("cfa", "reg")) {
+  special <- isTRUE(model_type %in% c("cfa", "reg"))
+  if (special) {
     rules <- c(
       rules,
       lapply(
@@ -75,7 +77,7 @@ id <- function(model = NULL, warn = TRUE, call = "sem", ...) {
       )
     )
   }
-  # STEP 4 - Print Rules (and Warnings)
+  # STEP 4 - Print Output
   wind <- 56L
   names <- c(
     format("", width = wind - 34L),
@@ -90,7 +92,11 @@ id <- function(model = NULL, warn = TRUE, call = "sem", ...) {
   for (i in 1:length(rules)) {
     row <- c(
       # rule title
-      format(rules[[i]]$rule, width = wind - 34L),
+      format(
+        paste0(ifelse(i <= nsem, "", "."),
+          rules[[i]]$rule),
+        width = wind - 34L
+        ),
       # pass?
       format(
         switch(as.character(rules[[i]]$pass),
@@ -133,7 +139,7 @@ id <- function(model = NULL, warn = TRUE, call = "sem", ...) {
     }
   }
   if (warn & widx > 0) {
-    cat("\nWarnings:\n")
+    cat("---\nWarnings:\n")
     for (i in 1:widx) {
       w0 <- strwrap(wrns[i], width = wind - 4L)
       ls <- length(w0)

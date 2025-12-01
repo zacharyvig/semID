@@ -16,14 +16,15 @@ classify_model <- function(partable = NULL) {
   nlv <- lapply(vnames$lv, length)
   nov.nox <- lapply(vnames$ov.nox, length)
   neqs.y <- lapply(vnames$eqs.y, length)
+  nov.cind <- lapply(vnames$ov.cind, length)
   # check a list for counts greater than zero
   nonzero <- function(x) {
     return(isTRUE(x > 0))
   }
   # classify model
   if (any(sapply(nlv, nonzero))) {
-    if (any(sapply(neqs.y, nonzero))) {
-      # lvs present and regressions present
+    if (any(sapply(neqs.y, nonzero)) | any(sapply(nov.cind, nonzero))) {
+      # lvs present and regressions/causal indicators present
       model_type <- "sem"
     } else {
       # lvs present but no regressions
