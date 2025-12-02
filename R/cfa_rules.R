@@ -10,21 +10,22 @@
 #' @author Zach Vig
 .cfa_rules$three_indicator_rule <- function(partable) {
   rule <- "Three Indicator Rule"
+  model_type <- classify_model(partable)
+  if (model_type != "cfa") {
+    out <- list(
+      rule = rule,
+      pass = NA,
+      warn = "This rule only applies to confirmatory factor analysis models",
+      cond = NA
+    )
+    return(out)
+  }
   # retrieve attributes and variable names
   lavpta <- lav_partable_attributes(partable)
   vnames <- lavpta$vnames
   # tally variables assuming one block
   lv <- vnames$lv[[1]]
   ov.ind <- vnames$ov.ind[[1]]
-  if (length(lv) == 0) {
-    out <- list(
-      rule = rule,
-      pass = NA,
-      warn = "This rule only applies when there are latent variables in the model",
-      cond = NA
-    )
-    return(out)
-  }
   # tally indicators per lv
   nov.ind <- sapply(lv, function(var){
     out <- with(partable, rhs[lhs == var & rhs %in% ov.ind])
@@ -97,21 +98,22 @@
 #' @author Zach Vig
 .cfa_rules$two_indicator_rule <- function(partable) {
   rule <- "Two Indicator Rule"
+  model_type <- classify_model(partable)
+  if (model_type != "cfa") {
+    out <- list(
+      rule = rule,
+      pass = NA,
+      warn = "This rule only applies to confirmatory factor analysis models",
+      cond = NA
+    )
+    return(out)
+  }
   # retrieve attributes and variable names
   lavpta <- lav_partable_attributes(partable)
   vnames <- lavpta$vnames
   # tally variables assuming one block
   lv <- vnames$lv[[1]]
   ov.ind <- vnames$ov.ind[[1]]
-  if (length(lv) == 0) {
-    out <- list(
-      rule = rule,
-      pass = NA,
-      warn = "This rule only applies when there are latent variables in the model",
-      cond = NA
-    )
-    return(out)
-  }
   if (length(lv) < 2) {
     out <- list(
       rule = rule,
