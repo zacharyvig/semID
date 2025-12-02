@@ -16,9 +16,19 @@
   lavpta <- lav_partable_attributes(partable)
   vnames <- lavpta$vnames
   # extract variables assuming one block
+  lv <- vnames$lv[[1]]
   ov <- vnames$ov[[1]]
   ov.ox <- intersect(vnames$eqs.x[[1]], ov)
   ov.nox <- intersect(vnames$eqs.y[[1]], ov)
+  if (length(lv) > 0) {
+    out <- list(
+      rule = rule,
+      pass = NA,
+      cond = NA,
+      warn = "This rule only applies when there are no latent variables in the model"
+    )
+    return(out)
+  }
   # check if endogenous vars appear as exogenous vars
   nox_ox <- ov.nox %in% ov.ox; names(nox_ox) <- ov.nox
   # build output
@@ -56,8 +66,18 @@
   lavpta <- lav_partable_attributes(partable)
   vnames <- lavpta$vnames
   # extract endogenous variables assuming one block
+  lv <- vnames$lv[[1]]
   ov <- vnames$ov[[1]]
   ov.nox <- vnames$eqs.y[[1]]
+  if (length(lv) > 0) {
+    out <- list(
+      rule = rule,
+      pass = NA,
+      cond = NA,
+      warn = "This rule only applies when there are no latent variables in the model"
+    )
+    return(out)
+  }
   # check recursion
   for (var in ov.nox) {
     recursive <- check_recursion(
@@ -108,8 +128,18 @@
   lavpta <- lav_partable_attributes(partable)
   vnames <- lavpta$vnames
   # extract endogenous variables assuming one block
+  lv <- vnames$lv[[1]]
   ov <- vnames$ov[[1]]
   ov.nox <- intersect(vnames$eqs.y[[1]], ov)
+  if (length(lv) > 0) {
+    out <- list(
+      rule = rule,
+      pass = NA,
+      cond = NA,
+      warn = "This rule only applies when there are no latent variables in the model"
+    )
+    return(out)
+  }
   # check recursion
   for (var in ov.nox) {
     recursive <- check_recursion(

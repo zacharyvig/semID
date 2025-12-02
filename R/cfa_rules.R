@@ -20,8 +20,8 @@
     out <- list(
       rule = rule,
       pass = NA,
-      cond = NA,
-      warn = "This rule only applies when there are latent variables in the model"
+      warn = "This rule only applies when there are latent variables in the model",
+      cond = NA
     )
     return(out)
   }
@@ -40,9 +40,9 @@
     out <- list(
       rule = rule,
       pass = NA,
-      cond = NA,
       warn = paste("This rule only applies when all latent variables have more than three indicators:",
-              paste(lv[nov.ind < 3 & nlv.ind == 0], collapse = ", "))
+              paste(lv[nov.ind < 3 & nlv.ind == 0], collapse = ", ")),
+      cond = NA
     )
     return(out)
   }
@@ -107,8 +107,8 @@
     out <- list(
       rule = rule,
       pass = NA,
-      cond = NA,
-      warn = "This rule only applies when there are latent variables in the model"
+      warn = "This rule only applies when there are latent variables in the model",
+      cond = NA
     )
     return(out)
   }
@@ -116,8 +116,8 @@
     out <- list(
       rule = rule,
       pass = NA,
-      cond = NA,
-      warn = "This rule only applies when more than one latent variable is in the model"
+      warn = "This rule only applies when more than one latent variable is in the model",
+      cond = NA
     )
     return(out)
   }

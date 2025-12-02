@@ -51,8 +51,8 @@
     out <- list(
       rule = rule,
       pass = NA,
-      cond = NA,
-      warn = "This rule only applies when there are latent variables in the model"
+      warn = "This rule only applies when there are latent variables in the model",
+      cond = NA
     )
     return(out)
   }
@@ -90,12 +90,12 @@
     out <- list(
       rule = rule,
       pass = NA,
-      cond = NA,
-      warn = "There are no variables (with free variance & free downstream disturbance variances) to which to apply the rule"
+      warn = "There are no variables (with free variance & free downstream disturbance variances) to which to apply the rule",
+      cond = NA
     )
     return(out)
   } else {
-    pass <- isTRUE(all(lv[free_var & free_var.nox] == lv[two_path.lv]))
+    pass <- isTRUE(all((free_var & free_var.nox) + (two_path.lv)))
     cond <- "N"
   }
   # warnings
@@ -131,8 +131,8 @@
   out <- list(
     rule = rule,
     pass = pass,
-    cond = cond,
-    warn = warn
+    warn = warn,
+    cond = cond
   )
   return(out)
 }
@@ -147,7 +147,7 @@
 #' @keywords internal
 #' @author Zach Vig
 .sem_rules$exogenous_x_rule <- function(partable) {
-  rule <- "Exog X Rule"
+  rule <- "Exogenous X Rule"
   # retrieve attributes and variable names
   lavpta <- lav_partable_attributes(partable)
   vnames <- lavpta$vnames
@@ -158,8 +158,8 @@
     out <- list(
       rule = rule,
       pass = NA,
-      cond = NA,
-      warn = "This rule only applies when there are latent variables in the model"
+      warn = "This rule only applies when there are latent variables in the model",
+      cond = NA
     )
     return(out)
   }
@@ -178,8 +178,8 @@
     out <- list(
       rule = rule,
       pass = NA,
-      cond = NA,
-      warn = "This rule only applies when causal indicators are in the model"
+      warn = "This rule only applies when causal indicators are in the model",
+      cond = NA
     )
     return(out)
   }
@@ -199,8 +199,8 @@
   out <- list(
     rule = rule,
     pass = pass,
-    cond = cond,
-    warn = warn
+    warn = warn,
+    cond = cond
   )
   return(out)
 }
