@@ -23,42 +23,33 @@ You can install the development version of semID from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("zacharyvig/semID")
-#> Downloading GitHub repo zacharyvig/semID@HEAD
-#> 
-#> ── R CMD build ─────────────────────────────────────────────────────────────────
-#>          checking for file 'C:\Users\zachv\AppData\Local\Temp\Rtmp46lquv\remotes2f502efa4e9\zacharyvig-semID-d2bf617/DESCRIPTION' ...  ✔  checking for file 'C:\Users\zachv\AppData\Local\Temp\Rtmp46lquv\remotes2f502efa4e9\zacharyvig-semID-d2bf617/DESCRIPTION'
-#>       ─  preparing 'semID':
-#>    checking DESCRIPTION meta-information ...     checking DESCRIPTION meta-information ...   ✔  checking DESCRIPTION meta-information
-#>       ─  checking for LF line-endings in source and make files and shell scripts
-#>       ─  checking for empty or unneeded directories
-#>      Omitted 'LazyData' from DESCRIPTION
-#>       ─  building 'semID_0.2.0.tar.gz'
-#>      
-#> 
-#> Installing package into 'C:/Users/zachv/AppData/Local/Temp/RtmpagTz0L/temp_libpath228083f1280'
-#> (as 'lib' is unspecified)
+# devtools::install_github("zacharyvig/semID")
 ```
 
 ## Example
 
 ``` r
 library(semID)
+#> semID 0.2.1 is still in the development phase
 
-#' # Holzinger and Swineford (1939) example
+# Holzinger and Swineford (1939) example
 HS.model <- ' visual  =~ x1 + x2 + x3
               textual =~ x4 + x5 + x6
               speed   =~ x7 + x8 + x9 '
 id(HS.model, warn = TRUE, call = "cfa", meanstructure = FALSE)
 #>                        Pass Necessary Sufficient Warning 
-#> 
 #> N_theta Rule            Yes       Yes         No 
 #> 2+ Emitted Paths Rule   Yes       Yes         No 
-#> Exogenous X Rule         NA         -          -       1 
+#> Exogenous X Rule          -         -          -       1 
 #> Three Indicator Rule    Yes        No        Yes 
 #> Two Indicator Rule      Yes        No        Yes 
-#> 
+#> SUR Rule                  -         -          -       2 
+#> Fully Recursive Rule      -         -          -       2 
+#> Recur/Corr Err Rule       -         -          -       2 
+#> ---
 #> Warnings:
 #> 1 - This rule only applies when causal indicators are
-#>     present
+#>     in the model
+#> 2 - This rule only applies when there are no latent
+#>     variables in the model
 ```

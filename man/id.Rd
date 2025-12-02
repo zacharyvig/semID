@@ -15,7 +15,8 @@ not pass or is not applicable, along with any other helpful information.}
 
 \item{call}{A character string specifying the call you intend to use to fit
 the model. This will ensure the correct model defaults are specified. Options
-currently include "lavaan", "sem", or "cfa".}
+currently include "lavaan", "sem", or "cfa". If a parameter table for fit
+object are supplied, this argument is ignored.}
 
 \item{...}{Additional arguments passed to the \code{lavaanify} function from
 \code{lavaan}. See \link[lavaan]{lavaanify} for more information.}
@@ -31,5 +32,5 @@ Nothing. Returns once summary table is printed.
 HS.model <- ' visual  =~ x1 + x2 + x3
               textual =~ x4 + x5 + x6
               speed   =~ x7 + x8 + x9 '
-id(HS.model, warn = TRUE, meanstructure = FALSE)
+id(HS.model, warn = TRUE, call = "cfa", meanstructure = FALSE)
 }

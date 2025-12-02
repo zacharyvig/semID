@@ -6,7 +6,7 @@
 \alias{semID-package}
 \title{semID: Evaluate SEM Identification Rules}
 \description{
-In order for structural equation model (SEM) estimation to be reliable, every parameter in the model must be identified, i.e., each must have a unique solution. The SEM literature has a plethora of rules to help check if a model is identified, many of which are implemented in this package.
+In order for structural equation model (SEM) estimation to be reliable, the model must be identified, i.e., every parameter in the model must have a unique solution. The SEM literature has a plethora of rules to help check if a model is identified, many of which are implemented in this package.
 }
 \author{
 \strong{Maintainer}: Zach Vig \email{zachvig@unc.edu}
