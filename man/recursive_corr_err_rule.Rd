@@ -11,6 +11,9 @@ Recursive model with correlated errors rule
 }
 \references{
 Bollen (2026). Elements of Structural Equation Models (SEMs).
+
+Brito, C., & Pearl, J. (2002). A new identification condition
+for recursive models with correlated errors.
 }
 \author{
 Zach Vig

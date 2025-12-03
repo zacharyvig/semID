@@ -1,17 +1,18 @@
 # Environment to store simultaneous equation model/regression rules
 .reg_rules <- list()
 
-#' Seemingly Unrelated Regressions rule
-#' @name sur_rule
+#' Null B_YY Rule
+#' @name null_byy_rule
 #' @param partable A \code{lavaan} parameter table
 #'
 #' @importFrom lavaan lav_partable_attributes
 #'
 #' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
+#'
 #' @keywords internal
 #' @author Zach Vig
-.reg_rules$sur_rule <- function(partable) {
-  rule <- "SUR Rule"
+.reg_rules$null_byy_rule <- function(partable) {
+  rule <- "Null B_YY Rule"
   # retrieve attributes and variable names
   lavpta <- lav_partable_attributes(partable)
   vnames <- lavpta$vnames
@@ -120,6 +121,9 @@
 #' @importFrom lavaan lav_partable_attributes
 #'
 #' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
+#' @references Brito, C., & Pearl, J. (2002). A new identification condition
+#' for recursive models with correlated errors.
+#'
 #' @keywords internal
 #' @author Zach Vig
 .reg_rules$recursive_corr_err_rule <- function(partable) {

@@ -11,6 +11,8 @@ Two Indicator rules
 }
 \references{
 Bollen (2026). Elements of Structural Equation Models (SEMs).
+
+Kenny, D. A. (1979). Correlation and causality.
 }
 \author{
 Zach Vig
