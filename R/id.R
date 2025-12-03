@@ -18,7 +18,7 @@
 #' @importFrom lavaan lavaanify
 #'
 #' @examples
-#' # The Holzinger and Swineford (1939) example
+#' # Holzinger and Swineford (1939) example
 #' HS.model <- ' visual  =~ x1 + x2 + x3
 #'               textual =~ x4 + x5 + x6
 #'               speed   =~ x7 + x8 + x9 '
@@ -88,88 +88,17 @@ id <- function(model = NULL, warn = TRUE, call = "sem", ...) {
   )
 
   # STEP 3 - Print Output
-  window <- 56L
-  names <- c(
-    "", "Pass", "Necessary", "Sufficient"
+  print_rules(
+    rules = rules,
+    names = c("", "Pass", "Necessary", "Sufficient"),
+    warn = warn,
+    warn.name = "Warning",
+    warn.sec = "Warnings",
+    window = 56L,
+    pos.lab = "Yes",
+    neg.lab = "No",
+    na.lab = "-"
   )
-  if (warn) {
-    names[5] <- "Warning"
-    wrns <- c()
-  }
-  cols_width <- sum(nchar(names[-1])) + length(names[-1])
-  names[1] <- format(names[1], width = window - cols_width)
-  widx <- 0 # warning index
-
-  cat(names, strrep("\n", 1L))
-
-  for (i in 1:length(rules)) {
-    row <- c(
-      # rule title
-      format(
-        rules[[i]]$rule,
-        width = window - cols_width
-        ),
-      # pass?
-      format(
-        switch(
-          as.character(rules[[i]]$pass),
-          "NA" = "-",
-          "TRUE" = "Yes",
-          "FALSE" = "No"),
-        width = nchar(names[2]), justify = "right"
-      ),
-      # necessary and/or sufficient?
-      switch(
-        as.character(rules[[i]]$cond),
-        "N" = c("Yes", "No"),
-        "S" = c("No", "Yes"),
-        "NS" = c("Yes", "Yes"),
-        "NA" = rep("-", 2)
-      )
-    )
-    row[3:4] <- c(
-      format(row[3], width = nchar(names[3]), justify = "right"),
-      format(row[4], width = nchar(names[4]), justify = "right")
-    )
-    if (warn & all(!is.na(rules[[i]]$warn))) {
-      idx.w0 <- c()
-      for (wrn in rules[[i]]$warn) {
-        if (wrn %in% wrns) {
-          idx.w0 <- c(idx.w0, which(wrns == wrn))
-        } else {
-          widx <- widx + 1
-          idx.w0 <- c(idx.w0, widx)
-          wrns <- c(wrns, wrn)
-        }
-      }
-      cat(
-        c(row, format(
-          paste(idx.w0, collapse = ","),
-          width = nchar(names[5]), justify = "right")),
-        "\n"
-        )
-    } else {
-      cat(row, "\n")
-    }
-  }
-
-  if (warn & widx > 0) {
-    cat("---\nWarnings:\n")
-    for (i in 1:widx) {
-      w0 <- strwrap(wrns[i], width = window - 4L)
-      ls <- length(w0)
-      w0[1] <- paste0(sprintf("%s - ", i), w0[1])
-      if (ls > 1L) {
-        w0[2:ls] <- paste0(
-          rep(strrep(" ", 4L), ls - 1L),
-          w0[2:ls]
-          )
-      }
-      cat(w0, sep = "\n")
-    }
-  }
-
-  cat("\n")
 
   return(invisible(NULL))
 }
