@@ -17,7 +17,7 @@
   lv <- vnames$lv[[1]]
   ov.ind <- vnames$ov.ind[[1]]
   eqs.y <- vnames$eqs.y[[1]]
-  if (length(eqs.y) == 0) {
+  if (length(eqs.y) > 0) {
     out <- list(
       rule = rule,
       pass = NA,
@@ -107,7 +107,7 @@
   lv <- vnames$lv[[1]]
   ov.ind <- vnames$ov.ind[[1]]
   eqs.y <- vnames$eqs.y[[1]]
-  if (length(eqs.y) == 0) {
+  if (length(eqs.y) > 0) {
     out <- list(
       rule = rule,
       pass = NA,

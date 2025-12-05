@@ -80,7 +80,7 @@ print_rules <- function(rules, names = c("", "Pass", "Necessary", "Sufficient"),
   }
 
   if (warn & widx > 0) {
-    cat("---\n", warn.sec, "\n")
+    cat("---", warn.sec, sep = "\n")
     for (i in 1:widx) {
       w0 <- strwrap(wrns[i], width = window - 4L)
       ls <- length(w0)

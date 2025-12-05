@@ -22,7 +22,7 @@ object are supplied, this argument is ignored.}
 \code{lavaan}. See \link[lavaan]{lavaanify} for more information.}
 }
 \value{
-Nothing. Returns once summary table is printed.
+The \code{lavaan} parameter table for the model (invisibly).
 }
 \description{
 ...

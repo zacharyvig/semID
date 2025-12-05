@@ -23,6 +23,12 @@ A list object with the rule function(s) specified by the user.
 The `semID` package stores identification rule functions internally. This function
  makes them available to the user as a list.
 }
+\examples{
+\dontrun{
+  rules <- get_rules(rule = "*", model_type = "cfa")
+}
+
+}
 \author{
 Zach Vig
 }

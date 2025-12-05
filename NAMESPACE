@@ -2,6 +2,7 @@
 
 export(get_rules)
 export(id)
+export(scaled)
 importFrom(lavaan,lav_partable_attributes)
 importFrom(lavaan,lav_partable_ndat)
 importFrom(lavaan,lav_partable_npar)

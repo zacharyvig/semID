@@ -31,6 +31,52 @@
   return(out)
 }
 
+#' Latent Scaling rule
+#' @name latent_scaling_rule
+#' @param partable A \code{lavaan} parameter table
+#'
+#' @importFrom lavaan lav_partable_npar lav_partable_ndat
+#'
+#' @references Bollen, K. A., Lilly, A. G., & Luo, L. (2024). Selecting scaling
+#' indicators in structural equation models (SEMs).
+#' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
+#' @keywords internal
+#' @author Zach Vig
+.sem_rules$latent_scaling_rule <- function(partable) {
+  rule <- "Latent Scaling Rule"
+  # retrieve attributes and variable names
+  lavpta <- lav_partable_attributes(partable)
+  vnames <- lavpta$vnames
+  # tally variables assuming one block
+  lv <- vnames$lv[[1]]
+  if (length(lv) == 0) {
+    out <- list(
+      rule = rule,
+      pass = NA,
+      warn = "This rule only applies when there are latent variables in the model",
+      cond = NA
+    )
+    return(out)
+  }
+  # build output
+  scaled <- scaled(partable, lv = lv)
+  pass <- isTRUE(all(scaled))
+  cond <- "N"
+  if (!pass) {
+    warn <- paste("Some latent variables are not scaled:",
+              paste(lv[!scaled], collapse = ", "))
+  } else {
+    warn <- NA
+  }
+  out <- list(
+    rule = rule,
+    pass = pass,
+    warn = warn,
+    cond = cond
+  )
+  return(out)
+}
+
 #' 2+ Emitted Paths rule
 #' @name two_emitted_paths_rule
 #'
@@ -105,7 +151,7 @@
       warn,
       paste(
         "Some variables do not have two emitted paths:",
-        lv[free_var & free_var.nox & !two_path.lv]
+        paste(lv[free_var & free_var.nox & !two_path.lv], collapse = ", ")
       )
     )
   }
@@ -114,7 +160,7 @@
       warn,
       paste(
         "(Not a warning) This rule ignores latent variables without free variance:",
-        lv[!free_var]
+        paste(lv[!free_var], collapse = ", ")
       )
     )
   }
@@ -123,7 +169,7 @@
       warn,
       paste(
         "(Not a warning) This rule ignores latent variables with downstream variables that do not have free disturbance variances:",
-        lv[!free_var.nox]
+        paste(lv[!free_var.nox], collapse = ", ")
       )
     )
   }

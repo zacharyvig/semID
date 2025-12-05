@@ -13,7 +13,7 @@
 #' @param ... Additional arguments passed to the \code{lavaanify} function from
 #'  \code{lavaan}. See \link[lavaan]{lavaanify} for more information.
 #'
-#' @return Nothing. Returns once summary table is printed.
+#' @return The \code{lavaan} parameter table for the model (invisibly).
 #'
 #' @importFrom lavaan lavaanify
 #'
@@ -25,6 +25,7 @@
 #' id(HS.model, warn = TRUE, call = "cfa", meanstructure = FALSE)
 #' @export
 id <- function(model = NULL, warn = TRUE, call = "sem", ...) {
+  dotdotdot <- list(...)
   # Checks
   stopifnot(
     "Argument `warn` must be a logical" =
@@ -34,6 +35,17 @@ id <- function(model = NULL, warn = TRUE, call = "sem", ...) {
     "Unknown `call` or `call` currently not supported" =
       call %in% c("lavaan", "sem", "cfa")
   )
+  if (isTRUE(dotdotdot$model.type == "efa")) {
+    dotdotdot[["model.type"]] <- NULL
+    warning("Only `model.type='sem'` is currently supported")
+  }
+  if (isTRUE(dotdotdot$debug)) {
+    dotdotdot[["debug"]] <- NULL
+    warning("Ignoring `debug`")
+  }
+  if (is.null(dotdotdot$auto)) {
+    dotdotdot$auto <- (call != "lavaan")
+  }
 
   # STEP 0 - Parse input
   if (inherits(model, "lavaan")) {
@@ -49,13 +61,15 @@ id <- function(model = NULL, warn = TRUE, call = "sem", ...) {
       input <- "partable"
     }
   } else {
-    args <- list(
-      model = model,
-      warn = TRUE,
-      debug = FALSE,
-      auto = (call != "lavaan"),
-      ...
-      )
+    args <- c(
+      list(
+        model = model,
+        warn = TRUE,
+        debug = FALSE,
+        model.type = "sem"
+      ),
+      dotdotdot
+    )
     partable <- do.call(lavaanify, args)
     input <- "syntax"
   }
@@ -100,5 +114,5 @@ id <- function(model = NULL, warn = TRUE, call = "sem", ...) {
     na.lab = "-"
   )
 
-  return(invisible(NULL))
+  return(invisible(partable))
 }
