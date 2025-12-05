@@ -30,7 +30,7 @@ You can install the development version of semID from
 
 ``` r
 library(semID)
-#> semID 0.2.1 is still in the development phase
+#> semID 0.2.1.9003 is still in the development phase
 
 # Holzinger and Swineford (1939) example
 HS.model <- ' visual  =~ x1 + x2 + x3
@@ -39,15 +39,16 @@ HS.model <- ' visual  =~ x1 + x2 + x3
 id(HS.model, warn = TRUE, call = "cfa", meanstructure = FALSE)
 #>                        Pass Necessary Sufficient Warning 
 #> N_theta Rule            Yes       Yes         No 
+#> Latent Scaling Rule     Yes       Yes         No 
 #> 2+ Emitted Paths Rule   Yes       Yes         No 
 #> Exogenous X Rule          -         -          -       1 
 #> Three Indicator Rule    Yes        No        Yes 
 #> Two Indicator Rule      Yes        No        Yes 
-#> SUR Rule                  -         -          -       2 
+#> Null B_YY Rule            -         -          -       2 
 #> Fully Recursive Rule      -         -          -       2 
 #> Recur/Corr Err Rule       -         -          -       2 
 #> ---
-#> Warnings:
+#> Warnings
 #> 1 - This rule only applies when causal indicators are
 #>     in the model
 #> 2 - This rule only applies when there are no latent
