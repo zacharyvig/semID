@@ -4,7 +4,7 @@
 \alias{check_recursion}
 \title{Function to check if a simultaneous equations model is recursive}
 \usage{
-check_recursion(partable, base, comp)
+check_recursion(partable, base, comp, n.paths)
 }
 \description{
 Function to check if a simultaneous equations model is recursive

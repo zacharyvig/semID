@@ -12,7 +12,7 @@ in the package. Use "*" to get all rules (or all rules of the defined
 model type)}
 
 \item{model_type}{A string specifying the model sub-type from which to get
-rules. Sub-types include "reg" (simultaneous equation models/regression models) and
+rules. Sub-types include "reg" (simultaneous equations models/regression models) and
 "cfa" (confirmatory factor analysis models). Use "sem" to get rules that apply
 to all structural equation models. Use "*" to get all rules in the package.}
 }
