@@ -127,7 +127,7 @@
     c3 <- sum(
       with(
         partable,
-        lhs == var & op == "=~" | rhs == var & op == "~"
+        lhs == var & op == "=~" & rhs != var | rhs == var & op == "~"
       )
     )
     return(c3 >= 2)
@@ -141,7 +141,7 @@
     )
     return(out)
   } else {
-    pass <- isTRUE(all((free_var & free_var.nox) + (two_path.lv)))
+    pass <- isTRUE(all(two_path.lv[free_var & free_var.nox]))
     cond <- "N"
   }
   # warnings
@@ -230,7 +230,6 @@
     return(out)
   }
   if (length(lv) == 1) {
-    rule <- paste(rule, "(1 LV)")
     pass <- isTRUE(n.ind >= 2)
     cond <- "S"
     warn <- ifelse(

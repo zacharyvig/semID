@@ -1,4 +1,4 @@
-# Environment to store simultaneous equation model/regression rules
+# Environment to store simultaneous equations model/regression rules
 .reg_rules <- list()
 
 #' Null B_YY Rule
@@ -81,9 +81,12 @@
   }
   # check recursion
   for (var in ov.nox) {
+    n.paths <- sum(with(partable, op == "~" & rhs %in% ov.nox))
+    comp <- with(partable, lhs[rhs == var & op == "~"])
     recursive <- check_recursion(
       partable = partable, base = var,
-      comp = with(partable, lhs[rhs == var & op == "~"])
+      comp = comp,
+      n.paths = n.paths - length(comp)
     )
     if (!recursive) break
   }
@@ -146,9 +149,12 @@
   }
   # check recursion
   for (var in ov.nox) {
+    n.paths <- sum(with(partable, op == "~"))
+    comp <- with(partable, lhs[rhs == var & op == "~"])
     recursive <- check_recursion(
       partable = partable, base = var,
-      comp = with(partable, lhs[rhs == var & op == "~"])
+      comp = comp,
+      n.paths = n.paths - length(comp)
     )
     if (!recursive) break
   }

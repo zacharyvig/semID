@@ -1,6 +1,6 @@
 #' Function to check if a simultaneous equations model is recursive
 #' @keywords internal
-check_recursion <- function(partable, base, comp) {
+check_recursion <- function(partable, base, comp, n.paths) {
   if (any(comp %in% base)) {
     # end on feedback loop
     return(FALSE)
@@ -9,10 +9,17 @@ check_recursion <- function(partable, base, comp) {
     newcomp <- sapply(comp, function(var) {
       with(partable, lhs[rhs == var & op == "~"])
     }, simplify = TRUE, USE.NAMES = FALSE)
-    if (length(unlist(newcomp)) > 0) {
-      check_recursion(partable, c(base, comp), unlist(newcomp))
+    n <- n.paths - length(unlist(newcomp))
+    if (length(unlist(newcomp)) > 0 & n > 0) {
+        out <- check_recursion(
+          partable = partable,
+          base = base,
+          comp = unlist(newcomp),
+          n.paths = n
+          )
+        return(out)
     } else {
-      # end on exogenous variables
+      # end on exogenous variables or use of all paths
       return(TRUE)
     }
   }
@@ -27,7 +34,7 @@ check_recursion <- function(partable, base, comp) {
 #'  in the package. Use "*" to get all rules (or all rules of the defined
 #'  model type)
 #' @param model_type A string specifying the model sub-type from which to get
-#'  rules. Sub-types include "reg" (simultaneous equation models/regression models) and
+#'  rules. Sub-types include "reg" (simultaneous equations models/regression models) and
 #'  "cfa" (confirmatory factor analysis models). Use "sem" to get rules that apply
 #'  to all structural equation models. Use "*" to get all rules in the package.
 #'
@@ -111,43 +118,47 @@ scaled <- function(partable, lv = NULL) {
   names(vec) <- lv
   for (var in lv) {
     # one-indicator case
-    one.ind <- sum(with(partable, lhs == var & op == "=~")) == 1
+    one.ind <- sum(with(partable, lhs == var & op == "=~" & rhs != var)) == 1
     if (one.ind) {
       vec[var] <- FALSE
       break
     }
     # two-indicator case / no lv correlations
     two.ind <- sum(with(partable, lhs == var & op == "=~")) == 2
-    cov.lv <- any(with(partable, lhs == var & rhs != var & op == "~~"))
+    cov.lv <- any(with(partable, (lhs == var & rhs != var) |
+                         (rhs == var & lhs != var) & op == "~~"))
     if (two.ind & !cov.lv) {
-      check0 <- sum(with(partable, lhs == var & op == "=~" & free == 0)) == 2
+      check0 <- sum(
+        with(partable, lhs == var & op == "=~" & free == 0)
+        ) == 2
       vec[var] <- check0
       break
     } else {
       check0 <- TRUE
     }
     # scaling indicator?
-    scale.ind.idx <- with(partable, lhs == var & op == "=~" & free == 0)
+    scale.ind.idx <- with(partable, lhs == var & op == "=~" &
+                            free == 0 & rhs != var)
     if (any(scale.ind.idx)) {
       check1 <- any(scale.ind.idx)
       scale.ind <- with(partable, rhs[scale.ind.idx])
       # scaling indicator mean fixed?
       check2 <- ifelse(
         meanstructure,
-        any(with(partable, lhs == si & op == "~1" & free == 0)),
+        any(with(partable, lhs %in% scale.ind & op == "~1" & free == 0)),
         TRUE
       )
     } else {
       check1 <- check2 <- FALSE
     }
-    # latent mean fixed?
-    check3 <- any(
-      with(partable, lhs == var & op == "~1" & free == 0)
-    )
     # latent variance fixed?
+    check3 <- any(
+      with(partable, lhs == var & rhs == var & op == "~~" & free == 0)
+    )
+    # latent mean fixed?
     check4 <- ifelse(
       meanstructure,
-      with(partable, lhs == var & rhs == var & op == "~~" & free == 0),
+      with(partable, lhs == var & op == "~1" & free == 0),
       TRUE
     )
     vec[var] <- isTRUE(check1 & check2) |
