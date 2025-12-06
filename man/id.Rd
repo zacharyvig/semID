@@ -25,7 +25,32 @@ object are supplied, this argument is ignored.}
 The \code{lavaan} parameter table for the model (invisibly).
 }
 \description{
-...
+This is the "workhorse" function of the \code{semID} package. The user supplies
+a model string in \code{lavaan} syntax (see \link[lavaan]{model.syntax} for more
+details) and the function prints an informative table to the console about the
+status of the model on a variety of common identification rules.
+}
+\details{
+The primary output of \code{id()} is a table printed to the console, where rows
+correspond to rules, and columns include "Pass" (did the rule pass?), "Necessary"
+(is the rule necessary for identification?), and "Sufficient" (is the rule
+sufficient for identification?). These columns can take values "Yes", "No",
+or be left blank in the case of NA values.
+
+If the user set the \code{warn} argument to "TRUE" (which is the default),
+a column labeled "Warning" is appended to the table, and an output section called
+"Warnings" is printed below the table. Warnings include why a rule failed, why
+a rule is not applicable to the current model, or why the necessary/sufficient
+conditions may not apply as usual.
+
+Warnings are identified by a number, and corresponding warning numbers are listed
+in the "Warning" column of the table.
+
+\code{call} takes character values "lavaan", "sem", or "cfa", specifying which
+\code{lavaan} function the user intends to call (and thus which defaults should)
+be used) when fitting the model in the case a model string is supplied. Supplying
+a parameter table or fitted model object ignores the \code{call} argument since
+defaults will have already been implemented.
 }
 \examples{
 # Holzinger and Swineford (1939) example
@@ -33,4 +58,8 @@ HS.model <- ' visual  =~ x1 + x2 + x3
               textual =~ x4 + x5 + x6
               speed   =~ x7 + x8 + x9 '
 id(HS.model, warn = TRUE, call = "cfa", meanstructure = FALSE)
+
+}
+\author{
+Zach Vig
 }
