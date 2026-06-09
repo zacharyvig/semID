@@ -37,21 +37,22 @@ library(semID)
 HS.model <- ' visual  =~ x1 + x2 + x3
               textual =~ x4 + x5 + x6
               speed   =~ x7 + x8 + x9 '
-id(HS.model, warn = TRUE, call = "cfa", meanstructure = FALSE)
-#>                        Pass Necessary Sufficient Warning 
-#> N_theta Rule            Yes       Yes         No 
+id(HS.model, include.msgs = TRUE, call = "cfa", 
+   meanstructure = FALSE)
+#>                        Pass Necessary Sufficient Message 
+#> Three Indicator Rule    Yes        No        Yes         
+#> Two Indicator Rule      Yes        No        Yes         
+#> Fully Recursive Rule      -         -          -       1 
+#> Null B_YY Rule            -         -          -       1 
+#> Recur/Corr Err Rule       -         -          -       1 
+#> Exogenous X Rule          -         -          -       2 
 #> Latent Scaling Rule     Yes       Yes         No 
+#> N_theta Rule            Yes       Yes         No 
 #> 2+ Emitted Paths Rule   Yes       Yes         No 
-#> Exogenous X Rule          -         -          -       1 
-#> Three Indicator Rule    Yes        No        Yes 
-#> Two Indicator Rule      Yes        No        Yes 
-#> Null B_YY Rule            -         -          -       2 
-#> Fully Recursive Rule      -         -          -       2 
-#> Recur/Corr Err Rule       -         -          -       2 
 #> ---
-#> Warnings
-#> 1 - This rule only applies when causal indicators are
-#>     in the model
-#> 2 - This rule only applies when there are no latent
-#>     variables in the model
+#> Messages
+#> 1 - [Info] This rule only applies when there are no
+#>     latent variables in the model
+#> 2 - [Info] This rule only applies when causal
+#>     indicators are in the model
 ```

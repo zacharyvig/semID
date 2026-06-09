@@ -3,7 +3,7 @@
 classify_model <- function(partable = NULL) {
   model_type <- NA
   # retrieve attributes and variable names
-  lavpta <- lav_partable_attributes(partable)
+  lavpta <- lavaan::lav_partable_attributes(partable)
   vnames <- lavpta$vnames
   # check for MLM
   if (lavpta$nblocks > 1) {

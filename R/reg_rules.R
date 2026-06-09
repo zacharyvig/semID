@@ -114,8 +114,7 @@ rule_reg_fully_recursive <- function(partable) {
 #' for recursive models with correlated errors.
 #'
 #' @keywords internal
-#' @author Zach Vig
-.reg_rules$recursive_corr_err_rule <- function(partable) {
+rule_reg_recursive_corr_err <- function(partable) {
   rule <- "Recur/Corr Err Rule"
   # retrieve attributes and variable names
   vars <- get_partable_vars(partable, c("lv", "ov", "eqs.y"))

@@ -1,10 +1,10 @@
 #' Printing function for rules list
 #'
-#' @param rules A rules list produced by internal identification rules
+#' @param x A \code{lavid} object, i.e., a list of rule output objects.
 #' @param names Character vector. The names of the columns of the main table
-#' @param warn Logical. If \code{TRUE} warnings are printed
-#' @param warn.name Character. The name of the warning index column
-#' @param warn.sec Character. The name of the warnings section
+#' @param include.msgs Logical. If \code{TRUE} messages are printed
+#' @param msgs.name Character. The name of the messages index column
+#' @param msgs.sec Character. The name of the messages section
 #' @param window Integer. The width of the output window
 #' @param pos.lab Character. The label for positive cells, e.g., "Yes".
 #' @param neg.lab Character. The label for negative cells, e.g., "No".

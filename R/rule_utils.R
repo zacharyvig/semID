@@ -53,7 +53,7 @@ get_rules <- function(rule = "*", model_type = "*") {
     "Unknown `model_type`" = model_type %in% c("*", "reg", "cfa", "sem")
   )
   pull_fns <- function(fns) {
-    mget(fns, env = asNamespace("semID"), mode = "function")
+    mget(fns, envir = asNamespace("semID"), mode = "function")
   }
   if (model_type == "*") model_type <- "all"
   rules <- get_rule_names(model_type)
@@ -100,7 +100,7 @@ build_rule_out <- function(rule, pass, msgs = NA, cond = c("N", "S", "NS", NA)) 
 #' internal function to get certain variables from a lavaan parameter table
 #' @noRd
 get_partable_vars <- function(partable, vars, var_names = NA) {
-  lavpta <- lav_partable_attributes(partable)
+  lavpta <- lavaan::lav_partable_attributes(partable)
   vnames <- lavpta$vnames
   # tally variables assuming one block
   out <- lapply(vars, function(var) {

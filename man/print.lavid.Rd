@@ -18,9 +18,17 @@
 )
 }
 \arguments{
+\item{x}{A \code{lavid} object, i.e., a list of rule output objects.}
+
 \item{...}{Not currently used}
 
 \item{names}{Character vector. The names of the columns of the main table}
+
+\item{include.msgs}{Logical. If \code{TRUE} messages are printed}
+
+\item{msgs.name}{Character. The name of the messages index column}
+
+\item{msgs.sec}{Character. The name of the messages section}
 
 \item{window}{Integer. The width of the output window}
 
@@ -29,14 +37,6 @@
 \item{neg.lab}{Character. The label for negative cells, e.g., "No".}
 
 \item{na.lab}{Character. The label for NA/blank cells.}
-
-\item{rules}{A rules list produced by internal identification rules}
-
-\item{warn}{Logical. If \code{TRUE} warnings are printed}
-
-\item{warn.name}{Character. The name of the warning index column}
-
-\item{warn.sec}{Character. The name of the warnings section}
 }
 \description{
 Printing function for rules list

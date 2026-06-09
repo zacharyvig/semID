@@ -44,7 +44,8 @@
 #' HS.model <- ' visual  =~ x1 + x2 + x3
 #'               textual =~ x4 + x5 + x6
 #'               speed   =~ x7 + x8 + x9 '
-#' id(HS.model, warn = TRUE, call = "cfa", meanstructure = FALSE)
+#' id(HS.model, include.msgs = TRUE, call = "cfa", 
+#'    meanstructure = FALSE)
 #'
 #' @export
 id <- function(model = NULL, include.msgs = TRUE, call = "sem", ...) {
@@ -93,7 +94,7 @@ id <- function(model = NULL, include.msgs = TRUE, call = "sem", ...) {
       ),
       dotdotdot
     )
-    partable <- do.call(lavaanify, args)
+    partable <- do.call(lavaan::lavaanify, args)
     input <- "syntax"
   }
 

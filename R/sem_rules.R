@@ -12,9 +12,9 @@ NULL
 #' @keywords internal
 rule_sem_ntheta <- function(partable) {
   # number of parameters
-  npar <- lav_partable_npar(partable)
+  npar <- lavaan::lav_partable_npar(partable)
   # number of means, variances, and covariances
-  ndat <- lav_partable_ndat(partable)
+  ndat <- lavaan::lav_partable_ndat(partable)
   # build output
   rule <- "N_theta Rule"
   pass <- isTRUE(npar <= ndat)
