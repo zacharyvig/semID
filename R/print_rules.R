@@ -3,24 +3,27 @@
 #' @param rules A rules list produced by internal identification rules
 #' @param names Character vector. The names of the columns of the main table
 #' @param warn Logical. If \code{TRUE} warnings are printed
-#' @param warn.col Character. The name of the warning index column
+#' @param warn.name Character. The name of the warning index column
 #' @param warn.sec Character. The name of the warnings section
 #' @param window Integer. The width of the output window
 #' @param pos.lab Character. The label for positive cells, e.g., "Yes".
 #' @param neg.lab Character. The label for negative cells, e.g., "No".
 #' @param na.lab Character. The label for NA/blank cells.
+#' @param ... Not currently used
 #'
-#' @keywords internal
-#' @author Zach Vig
-print_rules <- function(rules, names = c("", "Pass", "Necessary", "Sufficient"),
-                        warn = TRUE, warn.name = "Warning", warn.sec = "Warnings",
+#' @export
+print.lavid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient"),
+                        include.msgs = TRUE, msgs.name = "Message", msgs.sec = "Messages",
                         window = 56L, pos.lab = "Yes", neg.lab = "No", na.lab = "-") {
   names <- c(
     "", "Pass", "Necessary", "Sufficient"
   )
-  if (warn) {
-    names[5] <- warn.name
-    wrns <- c()
+  if (!is.null(attr(x, "include.msgs"))) {
+    include.msgs <- attr(x, "include.msgs")
+  }
+  if (include.msgs) {
+    names[5] <- msgs.name
+    msgs <- c()
   }
   cols_width <- sum(nchar(names[-1])) + length(names[-1])
   names[1] <- format(names[1], width = window - cols_width)
@@ -28,17 +31,18 @@ print_rules <- function(rules, names = c("", "Pass", "Necessary", "Sufficient"),
 
   cat(names, strrep("\n", 1L))
 
-  for (i in 1:length(rules)) {
+  for (i in 1:length(x)) {
+    this_rule <- x[[i]]
     row <- c(
       # rule title
       format(
-        rules[[i]]$rule,
+        this_rule$rule,
         width = window - cols_width
       ),
       # pass?
       format(
         switch(
-          as.character(rules[[i]]$pass),
+          as.character(this_rule$pass),
           "NA" = na.lab,
           "TRUE" = pos.lab,
           "FALSE" = neg.lab),
@@ -46,7 +50,7 @@ print_rules <- function(rules, names = c("", "Pass", "Necessary", "Sufficient"),
       ),
       # necessary and/or sufficient?
       switch(
-        as.character(rules[[i]]$cond),
+        as.character(this_rule$cond),
         "N" = c(pos.lab, neg.lab),
         "S" = c(neg.lab, pos.lab),
         "NS" = c(pos.lab, pos.lab),
@@ -57,15 +61,15 @@ print_rules <- function(rules, names = c("", "Pass", "Necessary", "Sufficient"),
       format(row[3], width = nchar(names[3]), justify = "right"),
       format(row[4], width = nchar(names[4]), justify = "right")
     )
-    if (warn & all(!is.na(rules[[i]]$warn))) {
+    if (include.msgs && all(!is.na(this_rule$msgs))) {
       idx.w0 <- c()
-      for (wrn in rules[[i]]$warn) {
-        if (wrn %in% wrns) {
-          idx.w0 <- c(idx.w0, which(wrns == wrn))
+      for (msg in this_rule$msgs) {
+        if (msg %in% msgs) {
+          idx.w0 <- c(idx.w0, which(msgs == msg))
         } else {
           widx <- widx + 1
           idx.w0 <- c(idx.w0, widx)
-          wrns <- c(wrns, wrn)
+          msgs <- c(msgs, msg)
         }
       }
       cat(
@@ -79,19 +83,19 @@ print_rules <- function(rules, names = c("", "Pass", "Necessary", "Sufficient"),
     }
   }
 
-  if (warn & widx > 0) {
-    cat("---", warn.sec, sep = "\n")
+  if (include.msgs && widx > 0) {
+    cat("---", msgs.sec, sep = "\n")
     for (i in 1:widx) {
-      w0 <- strwrap(wrns[i], width = window - 4L)
-      ls <- length(w0)
-      w0[1] <- paste0(sprintf("%s - ", i), w0[1])
+      m0 <- strwrap(msgs[i], width = window - 4L)
+      ls <- length(m0)
+      m0[1] <- paste0(sprintf("%s - ", i), m0[1])
       if (ls > 1L) {
-        w0[2:ls] <- paste0(
+        m0[2:ls] <- paste0(
           rep(strrep(" ", 4L), ls - 1L),
-          w0[2:ls]
+          m0[2:ls]
         )
       }
-      cat(w0, sep = "\n")
+      cat(m0, sep = "\n")
     }
   }
 

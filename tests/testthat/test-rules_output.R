@@ -1,18 +1,18 @@
 test_that("rules produce the correct output", {
   rules <- get_rules(rule = "*", model_type = "*")
-  partable <- lavaanify("y ~ x", warn = FALSE)
+  partable <- lavaan::lavaanify("y ~ x", warn = FALSE)
   for (fn in names(rules)) {
     expect_named(
       do.call(rules[[fn]], list(partable)),
-      c("rule", "pass", "warn", "cond"),
+      c("rule", "pass", "msgs", "cond"),
       label = fn, ignore.order = FALSE
       )
   }
 })
 
 test_that("rule titles should be correct length", {
-  rules <- get_rules(rule = "*", model_type = "*")
-  partable <- lavaanify("y ~ x", warn = FALSE)
+  rules <- get_rule_names(model_type = "all")
+  partable <- lavaan::lavaanify("y ~ x", warn = FALSE)
   test <- capture.output(id(partable))[1]
   blank <- sub("^(\\s+)([A-Za-z\\s]+)$", "\\1", test, perl = TRUE)
   for (rule in rules) {

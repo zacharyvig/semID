@@ -28,8 +28,8 @@
 #'
 #' @param model A character string model in \code{lavaan} syntax, a
 #'  \code{lavaan} parameter table, or a fitted \code{lavaan} object.
-#' @param warn Logical. If \code{TRUE}, the output will include why a rule does
-#'  not pass or is not applicable, along with any other helpful information.
+#' @param include.msgs Logical. If \code{TRUE}, the output will include why a rule 
+#' does not pass or is not applicable, along with any other helpful information.
 #' @param call A character string specifying the call you intend to use to fit
 #'  the model. This will ensure the correct model defaults are specified. Options
 #'  currently include "lavaan", "sem", or "cfa". If a parameter table for fit
@@ -39,8 +39,6 @@
 #'
 #' @return The \code{lavaan} parameter table for the model (invisibly).
 #'
-#' @importFrom lavaan lavaanify
-#'
 #' @examples
 #' # Holzinger and Swineford (1939) example
 #' HS.model <- ' visual  =~ x1 + x2 + x3
@@ -48,14 +46,13 @@
 #'               speed   =~ x7 + x8 + x9 '
 #' id(HS.model, warn = TRUE, call = "cfa", meanstructure = FALSE)
 #'
-#' @author Zach Vig
 #' @export
-id <- function(model = NULL, warn = TRUE, call = "sem", ...) {
+id <- function(model = NULL, include.msgs = TRUE, call = "sem", ...) {
   dotdotdot <- list(...)
   # Checks
   stopifnot(
-    "Argument `warn` must be a logical" =
-      is.logical(warn)
+    "Argument `include.msgs` must be a logical" =
+      is.logical(include.msgs)
   )
   stopifnot(
     "Unknown `call` or `call` currently not supported" =
@@ -106,7 +103,7 @@ id <- function(model = NULL, warn = TRUE, call = "sem", ...) {
     stop("This model type is not currently supported")
   }
   if(input == "syntax") {
-    if (call == "cfa" & call != model_type) {
+    if (call == "cfa" && call != model_type) {
       warning("`sem()` or `lavaan()` may be more appropirate calls for this type of model")
     }
   }
@@ -114,31 +111,13 @@ id <- function(model = NULL, warn = TRUE, call = "sem", ...) {
   # STEP 2 - Evaluate rules
   rules <- c(
     lapply(
-      get_rules(model_type = "sem"),
-      function(rule) do.call(rule, list(partable))
-    ),
-    lapply(
-      get_rules(model_type = "cfa"),
-      function(rule) do.call(rule, list(partable))
-    ),
-    lapply(
-      get_rules(model_type = "reg"),
+      get_rule_names("all"),
       function(rule) do.call(rule, list(partable))
     )
   )
 
-  # STEP 3 - Print Output
-  print_rules(
-    rules = rules,
-    names = c("", "Pass", "Necessary", "Sufficient"),
-    warn = warn,
-    warn.name = "Warning",
-    warn.sec = "Warnings",
-    window = 56L,
-    pos.lab = "Yes",
-    neg.lab = "No",
-    na.lab = "-"
-  )
+  class(rules) <- c("lavid", "list")
+  attr(rules, "include.msgs") <- include.msgs
 
-  return(invisible(partable))
+  return(rules)
 }

@@ -9,12 +9,13 @@
 <!-- badges: end -->
 
 semID allows the user to input a Structural Equation Model (SEM) in
-`lavaan` syntax and check it against a number of identification rules
-from the literature. Rules are specified as being necessary and/or
-sufficient and specific reasons are given when a rule is broken. Caution
-is given to the user in using the output of the package as the sole
-determinant of model identification – instead, it should be used as a
-“quick check” for any outstanding issues with the model.
+`lavaan` (Roseel, 2012) syntax and check it against a number of
+identification rules from the literature. Rules are specified as being
+necessary and/or sufficient and specific reasons are given when a rule
+is broken. Caution is given to the user in using the output of the
+package as the sole determinant of model identification – instead, it
+should be used as a “quick check” for any outstanding issues with the
+model.
 
 ## Installation
 
@@ -30,7 +31,7 @@ You can install the development version of semID from
 
 ``` r
 library(semID)
-#> semID 0.2.1.9003 is still in the development phase
+#> semID 0.3.0 is still in the development phase
 
 # Holzinger and Swineford (1939) example
 HS.model <- ' visual  =~ x1 + x2 + x3

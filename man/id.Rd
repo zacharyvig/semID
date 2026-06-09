@@ -4,14 +4,14 @@
 \alias{id}
 \title{Evaluate common Structural Equation Model (SEM) identification rules}
 \usage{
-id(model = NULL, warn = TRUE, call = "sem", ...)
+id(model = NULL, include.msgs = TRUE, call = "sem", ...)
 }
 \arguments{
 \item{model}{A character string model in \code{lavaan} syntax, a
 \code{lavaan} parameter table, or a fitted \code{lavaan} object.}
 
-\item{warn}{Logical. If \code{TRUE}, the output will include why a rule does
-not pass or is not applicable, along with any other helpful information.}
+\item{include.msgs}{Logical. If \code{TRUE}, the output will include why a rule 
+does not pass or is not applicable, along with any other helpful information.}
 
 \item{call}{A character string specifying the call you intend to use to fit
 the model. This will ensure the correct model defaults are specified. Options
@@ -59,7 +59,4 @@ HS.model <- ' visual  =~ x1 + x2 + x3
               speed   =~ x7 + x8 + x9 '
 id(HS.model, warn = TRUE, call = "cfa", meanstructure = FALSE)
 
-}
-\author{
-Zach Vig
 }

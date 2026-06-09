@@ -1,32 +1,27 @@
-# Environment to store simultaneous equations model/regression rules
-.reg_rules <- list()
+#' Rules for simultaneous equation/regression models
+#' @name reg_rules
+#' @keywords internal
+NULL
 
-#' Null B_YY Rule
-#' @name null_byy_rule
+# Null B_YY Rule
+#' @rdname reg_rules
 #' @param partable A \code{lavaan} parameter table
-#'
-#' @importFrom lavaan lav_partable_attributes
 #'
 #' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
 #'
 #' @keywords internal
-#' @author Zach Vig
-.reg_rules$null_byy_rule <- function(partable) {
+rule_reg_null_byy <- function(partable) {
   rule <- "Null B_YY Rule"
   # retrieve attributes and variable names
-  lavpta <- lav_partable_attributes(partable)
-  vnames <- lavpta$vnames
-  # extract variables assuming one block
-  lv <- vnames$lv[[1]]
-  ov <- vnames$ov[[1]]
-  ov.ox <- intersect(vnames$eqs.x[[1]], ov)
-  ov.nox <- intersect(vnames$eqs.y[[1]], ov)
-  if (length(lv) > 0) {
-    out <- list(
+  vars <- get_partable_vars(partable, c("lv", "ov", "eqs.x", "eqs.y"))
+  ov.ox <- intersect(vars$eqs.x, vars$ov)
+  ov.nox <- intersect(vars$eqs.y, vars$ov)
+  if (length(vars$lv) > 0) {
+    out <- build_rule_out(
       rule = rule,
       pass = NA,
-      cond = NA,
-      warn = "This rule only applies when there are no latent variables in the model"
+      cond = NA_character_,
+      msgs = "[Info] This rule only applies when there are no latent variables in the model"
     )
     return(out)
   }
@@ -35,47 +30,40 @@
   # build output
   if (any(nox_ox[!is.na(nox_ox)])) {
     pass <- FALSE
-    warn <- paste(
-      "One or more endogenous variables appear as regression predictors:",
+    msgs <- paste(
+      "[Fail] One or more endogenous variables appear as regression predictors:",
       paste(ov.nox[nox_ox], collapse = ", ")
     )
   } else {
     pass <- TRUE
-    warn <- NA
+    msgs <- NA
   }
-  out <- list(
+  out <- build_rule_out(
     rule = rule,
     pass = pass,
-    warn = warn,
+    msgs = msgs,
     cond = "S"
   )
   return(out)
 }
 
-#' Fully Recursive model rule
-#' @name fully_recursive_rule
+# Fully Recursive model rule
+#' @rdname reg_rules
 #' @param partable A \code{lavaan} parameter table
-#'
-#' @importFrom lavaan lav_partable_attributes
 #'
 #' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
 #' @keywords internal
-#' @author Zach Vig
-.reg_rules$fully_recursive_rule <- function(partable) {
+rule_reg_fully_recursive <- function(partable) {
   rule <- "Fully Recursive Rule"
   # retrieve attributes and variable names
-  lavpta <- lav_partable_attributes(partable)
-  vnames <- lavpta$vnames
-  # extract endogenous variables assuming one block
-  lv <- vnames$lv[[1]]
-  ov <- vnames$ov[[1]]
-  ov.nox <- vnames$eqs.y[[1]]
-  if (length(lv) > 0) {
-    out <- list(
+  vars <- get_partable_vars(partable, c("lv", "ov", "eqs.y"))
+  ov.nox <- intersect(vars$eqs.y, vars$ov)
+  if (length(vars$lv) > 0) {
+    out <- build_rule_out(
       rule = rule,
       pass = NA,
-      cond = NA,
-      warn = "This rule only applies when there are no latent variables in the model"
+      cond = NA_character_,
+      msgs = "[Info] This rule only applies when there are no latent variables in the model"
     )
     return(out)
   }
@@ -96,32 +84,30 @@
   # build output
   if (isFALSE(recursive)) {
     pass <- FALSE
-    warn <- "Feedback loops exist in the model, i.e., the model is non-recursive"
+    msgs <- "[Fail] Feedback loops exist in the model, i.e., the model is non-recursive"
   } else if (any(cor_err.ov.nox)) {
     pass <- FALSE
     viol <- paste(c(covs$lhs[cor_err.ov.nox], covs$rhs[cor_err.ov.nox]), sep = "/")
-    warn <- paste(
-      "The model is recursive but some endogenous variables have correlated errors:",
+    msgs <- paste(
+      "[Fail] The model is recursive but some endogenous variables have correlated errors:",
       paste(viol, collapse = ", ")
     )
   } else {
     pass <- TRUE
-    warn <- NA
+    msgs <- NA
   }
-  out <- list(
+  out <- build_rule_out(
     rule = rule,
     pass = pass,
-    warn = warn,
+    msgs = msgs,
     cond = "S"
   )
   return(out)
 }
 
-#' Recursive model with correlated errors rule
-#' @name recursive_corr_err_rule
+# Recursive model with correlated errors rule
+#' @rdname reg_rules
 #' @param partable A \code{lavaan} parameter table
-#'
-#' @importFrom lavaan lav_partable_attributes
 #'
 #' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
 #' @references Brito, C., & Pearl, J. (2002). A new identification condition
@@ -132,18 +118,14 @@
 .reg_rules$recursive_corr_err_rule <- function(partable) {
   rule <- "Recur/Corr Err Rule"
   # retrieve attributes and variable names
-  lavpta <- lav_partable_attributes(partable)
-  vnames <- lavpta$vnames
-  # extract endogenous variables assuming one block
-  lv <- vnames$lv[[1]]
-  ov <- vnames$ov[[1]]
-  ov.nox <- intersect(vnames$eqs.y[[1]], ov)
-  if (length(lv) > 0) {
-    out <- list(
+  vars <- get_partable_vars(partable, c("lv", "ov", "eqs.y"))
+  ov.nox <- intersect(vars$eqs.y, vars$ov)
+  if (length(vars$lv) > 0) {
+    out <- build_rule_out(
       rule = rule,
       pass = NA,
-      cond = NA,
-      warn = "This rule only applies when there are no latent variables in the model"
+      cond = NA_character_,
+      msgs = "[Info] This rule only applies when there are no latent variables in the model"
     )
     return(out)
   }
@@ -170,22 +152,22 @@
   # build output
   if (isFALSE(recursive)) {
     pass <- FALSE
-    warn <- "Feedback loops exist in the model, i.e., the model is non-recursive"
+    msgs <- "[Fail] Feedback loops exist in the model, i.e., the model is non-recursive"
   } else if (any(cor_err.eqs)) {
     pass <- FALSE
     viol <- paste(covs$lhs[cor_err.eqs], covs$rhs[cor_err.eqs], sep = "/")
-    warn <- paste(
-      "The model is recursive but some directly related variables have correlated errors:",
+    msgs <- paste(
+      "[Fail] The model is recursive but some directly related variables have correlated errors:",
       paste(viol, collapse = ", ")
     )
   } else {
     pass <- TRUE
-    warn <- NA
+    msgs <- NA
   }
-  out <- list(
+  out <- build_rule_out(
     rule = rule,
     pass = pass,
-    warn = warn,
+    msgs = msgs,
     cond = "S"
   )
   return(out)

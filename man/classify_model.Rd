@@ -9,7 +9,4 @@ classify_model(partable = NULL)
 \description{
 Classify a model using the parameter table for internal use
 }
-\author{
-Zach Vig
-}
 \keyword{internal}
