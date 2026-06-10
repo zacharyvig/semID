@@ -11,6 +11,7 @@
   include.msgs = TRUE,
   msgs.name = "Message",
   msgs.sec = "Messages",
+  msgs.levels = c(`1` = "Info", `2` = "Reason", `3` = "WARNING"),
   window = 56L,
   pos.lab = "Yes",
   neg.lab = "No",
@@ -29,6 +30,9 @@
 \item{msgs.name}{Character. The name of the messages index column}
 
 \item{msgs.sec}{Character. The name of the messages section}
+
+\item{msgs.levels}{Named character vector. The names of the message levels,
+e.g., "1" = "Info", "2" = "Reason", "3" = "WARNING".}
 
 \item{window}{Integer. The width of the output window}
 

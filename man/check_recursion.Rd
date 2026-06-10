@@ -2,11 +2,16 @@
 % Please edit documentation in R/rule_utils.R
 \name{check_recursion}
 \alias{check_recursion}
-\title{Function to check if a simultaneous equations model is recursive}
+\title{Check recursion using Depth-First Search algorithm}
 \usage{
-check_recursion(partable, base, comp, n.paths)
+check_recursion(partable, x)
+}
+\arguments{
+\item{partable}{A lavaan parameter table}
+
+\item{x}{A character vector of variable names from which to start the algorithm.}
 }
 \description{
-Function to check if a simultaneous equations model is recursive
+Check recursion using Depth-First Search algorithm
 }
 \keyword{internal}

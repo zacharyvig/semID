@@ -18,7 +18,10 @@ rule_cfa_three_indicator <- function(partable) {
     out <- build_rule_out(
       rule = rule,
       pass = NA,
-      msgs = "[Info] This rule only applies to confirmatory factor analysis models",
+      msgs = add_rule_msgs(
+        new_msgs = "This rule only applies to confirmatory factor analysis models",
+        levels = "1"
+      ),
       cond = NA_character_
     )
     return(out)
@@ -38,8 +41,11 @@ rule_cfa_three_indicator <- function(partable) {
     out <- build_rule_out(
       rule = rule,
       pass = NA,
-      msgs = paste("[Info] This rule only applies when all latent variables have more than three indicators:",
+      msgs = add_rule_msgs(
+        new_msgs = paste("This rule only applies when all latent variables have more than three indicators:",
                    paste(vars$lv[nov.ind < 3 & nlv.ind == 0], collapse = ", ")),
+        levels = "1"
+      ),
       cond = NA_character_
     )
     return(out)
@@ -62,18 +68,30 @@ rule_cfa_three_indicator <- function(partable) {
   msgs <- c()
   if (any(nlv.ind > 0)) {
     cond <- NA_character_
-    msgs <- c(msgs, "[Info] Cannot establish sufficiency when higher order factors are present; pass/fail applies to first order factors only")
+    msgs <- add_rule_msgs(
+      msgs = msgs,
+      new_msgs = "Cannot establish sufficiency when higher order factors are present; pass/fail applies to first order factors only",
+      levels = "1"
+    )
   } else {
     cond <- "S"
   }
   pass <- isTRUE(all(fc1.fof) && all(!cor_err.ind))
   if (any(!fc1.fof)) {
-    msgs <- c(msgs, paste("[Fail] Some indicators have a factor complexity greater than one:",
-              paste(ind.fof[!fc1.fof], collapse = ", ")))
+    msgs <- add_rule_msgs(
+      msgs = msgs,
+      new_msgs = paste("Some indicators have a factor complexity greater than one:",
+                paste(ind.fof[!fc1.fof], collapse = ", ")),
+      levels = "2"
+    )
   }
   if (any(cor_err.ind)) {
-    msgs <- c(msgs, paste("[Fail] Some indicators have correlated errors:",
-              paste(ind.fof[cor_err.ind], collapse = ", ")))
+    msgs <- add_rule_msgs(
+      msgs = msgs,
+      new_msgs = paste("Some indicators have correlated errors:",
+              paste(ind.fof[cor_err.ind], collapse = ", ")),
+      levels = "2"
+    )
   }
   out <- build_rule_out(
     rule = rule,
@@ -101,7 +119,10 @@ rule_cfa_two_indicator <- function(partable) {
     out <- build_rule_out(
       rule = rule,
       pass = NA,
-      msgs = "[Info] This rule only applies to confirmatory factor analysis models",
+      msgs = add_rule_msgs(
+        new_msgs = "This rule only applies to confirmatory factor analysis models",
+        levels = "1"
+      ),
       cond = NA_character_
     )
     return(out)
@@ -110,7 +131,10 @@ rule_cfa_two_indicator <- function(partable) {
     out <- build_rule_out(
       rule = rule,
       pass = NA,
-      msgs = "[Info] This rule only applies when more than one latent variable is in the model",
+      msgs = add_rule_msgs(
+        new_msgs = "This rule only applies when more than one latent variable is in the model",
+        levels = "1"
+      ),
       cond = NA_character_
     )
     return(out)
@@ -130,8 +154,11 @@ rule_cfa_two_indicator <- function(partable) {
     out <- build_rule_out(
       rule = rule,
       pass = NA,
-      msgs = paste("[Info] This rule only applies when all latent variables have more than two indicators:",
+      msgs = add_rule_msgs(
+        new_msgs = paste("This rule only applies when all latent variables have more than two indicators:",
                    paste(vars$lv[nov.ind < 2 & nlv.ind == 0], collapse = ", ")),
+        levels = "1"
+      ),
       cond = NA_character_
     )
     return(out)
@@ -156,22 +183,38 @@ rule_cfa_two_indicator <- function(partable) {
   msgs <- c()
   if (any(nlv.ind > 0)) {
     cond <- NA_character_
-    msgs <- c(msgs, "[Info] Cannot establish sufficiency when higher order factors are present; pass/fail applies to first order factors only")
+    msgs <- add_rule_msgs(
+      msgs = msgs,
+      new_msgs = "Cannot establish sufficiency when higher order factors are present; pass/fail applies to first order factors only",
+      levels = "1"
+    )
   } else {
     cond <- "S"
   }
   pass <- isTRUE(all(fc1.fof) && all(!cor_err.ind) && all(cor.lv))
   if (any(!fc1.fof)) {
-    msgs <- c(msgs, paste("[Fail] Some indicators have a factor complexity greater than one:",
-                          paste(ind.fof[!fc1.fof], collapse = ", ")))
+    msgs <- add_rule_msgs(
+      msgs = msgs,
+      new_msgs = paste("Some indicators have a factor complexity greater than one:",
+                          paste(ind.fof[!fc1.fof], collapse = ", ")),
+      levels = "2"
+    )
   }
   if (any(cor_err.ind)) {
-    msgs <- c(msgs, paste("[Fail] Some indicators have correlated errors:",
-                          paste(ind.fof[cor_err.ind], collapse = ", ")))
+    msgs <- add_rule_msgs(
+      msgs = msgs,
+      new_msgs = paste("Some indicators have correlated errors:",
+                          paste(ind.fof[cor_err.ind], collapse = ", ")),
+      levels = "2"
+    )
   }
   if (any(!cor.lv)) {
-    msgs <- c(msgs, paste("[Fail] Some latent variables are not correlated with another latent variable:",
-              paste(vars$lv[idx.fof & !cor.lv] , collapse = ", ")))
+    msgs <- add_rule_msgs(
+      msgs = msgs,
+      new_msgs = paste("Some latent variables are not correlated with another latent variable:",
+              paste(vars$lv[idx.fof & !cor.lv] , collapse = ", ")),
+      levels = "2"
+    )
   }
   out <- build_rule_out(
     rule = rule,
