@@ -1,7 +1,7 @@
 Package: semID
 Type: Package
 Title: Evaluate SEM Identification Rules
-Version: 0.3.1
+Version: 0.3.2
 Authors@R: c(
     person(
       "Zach", "Vig",
