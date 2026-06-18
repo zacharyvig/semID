@@ -31,7 +31,7 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
   }
   cols_width <- sum(nchar(names[-1])) + length(names[-1])
   names[1] <- format(names[1], width = window - cols_width)
-  widx <- 0L # global warning index
+  midx <- 0L # global message index
 
   version <- utils::packageVersion("semID")
   cat(sprintf("semID %s Rule Check\n\n", version))
@@ -69,20 +69,20 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
       format(row[4], width = nchar(names[4]), justify = "right")
     )
     if (include.msgs && all(!is.na(this_rule$msgs))) {
-      idx.w0 <- c()
+      idx.m0 <- c()
       for (msg in this_rule$msgs) {
         if (msg %in% msgs) {
           # prevent duplicate messages
-          idx.w0 <- c(idx.w0, which(msgs == msg))
+          idx.m0 <- c(idx.m0, which(msgs == msg))
         } else {
-          widx <- widx + 1
-          idx.w0 <- c(idx.w0, widx)
+          midx <- midx + 1
+          idx.m0 <- c(idx.m0, midx)
           msgs <- c(msgs, msg)
         }
       }
       cat(
         c(row, format(
-          paste(idx.w0, collapse = ","),
+          paste(idx.m0, collapse = ","),
           width = nchar(names[5]), justify = "right")),
         "\n"
       )
@@ -91,19 +91,12 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
     }
   }
 
-  if (include.msgs && widx > 0) {
+  if (include.msgs && midx > 0) {
     cat("---", msgs.sec, sep = "\n")
-    for (i in 1:widx) {
+    for (i in 1:midx) {
       # make space for index, e.g., "1 - ", "2 - ", etc.
-      m0 <- strwrap(msgs[i], width = window - 4)
-      ls <- length(m0)
-      m0[1] <- paste0(sprintf("%s - ", i), m0[1])
-      if (ls > 1L) {
-        m0[2:ls] <- paste0(
-          rep(strrep(" ", 4L), ls - 1),
-          m0[2:ls]
-        )
-      }
+      m0 <- strwrap(msgs[i], width = window, initial = sprintf("%s - ", i),
+                    exdent = 4)
       cat(m0, sep = "\n")
     }
   }
@@ -178,12 +171,17 @@ print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L,
     cat(sprintf("%sScaling indicator: %s\n\n", indents[2], scale.ind))
 
     if (include.msgs) {
+      prefix <- paste0(bullet, " ")
       if (isTRUE(scaling[[i]]$scaled)) {
+        # make space for index, e.g., "1 - ", "2 - ", etc.
         cat(sprintf("%sScaling method(s):\n", indents[2]))
-        cat(paste0(indents[3], bullet, " ", scaling[[i]]$scaling.method, collapse = "\n"))
+        msgs <- strwrap(scaling[[i]]$scaling.method, width = window,
+                        initial = paste0(indents[3], prefix),
+                        prefix = indents[3], exdent = nchar(prefix))
+        cat(msgs, sep = "\n")
       } else {
         cat(sprintf("%sScaling error:\n", indents[2]))
-        cat(paste0(indents[3], bullet, " ", scaling[[i]]$fail.reason))
+        cat(paste0(indents[3], prefix, scaling[[i]]$fail.reason))
       }
       cat("\n\n")
     }
