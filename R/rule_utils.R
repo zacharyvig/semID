@@ -1,28 +1,39 @@
-#' Function to check if a simultaneous equations model is recursive
+#' Check recursion using Depth-First Search algorithm
+#' @param partable A lavaan parameter table
+#' @param x A character vector of variable names from which to start the algorithm.
 #' @keywords internal
-check_recursion <- function(partable, base, comp, n.paths) {
-  if (any(comp %in% base)) {
-    # end on feedback loop
-    return(FALSE)
-  } else {
-    # new comparison variables
-    newcomp <- sapply(comp, function(var) {
-      with(partable, lhs[rhs == var & op == "~"])
-    }, simplify = TRUE, USE.NAMES = FALSE)
-    n <- n.paths - length(unlist(newcomp))
-    if (length(unlist(newcomp)) > 0 & n > 0) {
-        out <- check_recursion(
-          partable = partable,
-          base = base,
-          comp = unlist(newcomp),
-          n.paths = n
-          )
-        return(out)
-    } else {
-      # end on exogenous variables or use of all paths
-      return(TRUE)
+check_recursion <- function(partable, x) {
+  # regressions
+  regs <- subset(partable, op == "~" & free > 0)
+  ds_full <- split(regs$lhs, regs$rhs)
+
+  loop <- function(x, tally) {
+    tally <- c(tally, x)
+    ds <- ds_full[[x]]
+    if (length(ds)) {
+      for (var in ds) {
+        if (var %in% tally) {
+          return(FALSE)
+        } else {
+          out <- loop(var, tally)
+          if (isFALSE(out)) {
+            return(FALSE)
+          }
+        }
+      }
+    }
+    return(TRUE)
+  }
+
+  for (var in x) {
+    out <- loop(var, tally = c())
+    if (isFALSE(out)) {
+      return(FALSE)
     }
   }
+
+  return(TRUE)
+  
 }
 
 #' Gather identification rules as a list
@@ -114,3 +125,24 @@ get_partable_vars <- function(partable, vars, var_names = NA) {
   }
   return(out)
 }
+
+#' Internal function for adding messages to rule output
+#' @noRd
+add_rule_msgs <- function(msgs = NA, new_msgs, levels = NULL) {
+  if (is.na(msgs)) msgs <- c()
+  stopifnot(length(new_msgs) == length(levels))
+  level.labels <- c(
+    "1" = "Info",
+    "2" = "Reason",
+    "3" = "WARNING"
+  )
+  if (is.null(levels)) levels <- rep(NA, length(new_msgs))
+  new_msgs <- ifelse(
+    is.na(levels),
+    new_msgs,
+    sprintf("[%s] %s", level.labels[as.character(levels)], new_msgs)
+  )
+  out <- c(msgs[!is.na(msgs)], new_msgs)
+  return(out)
+}
+  

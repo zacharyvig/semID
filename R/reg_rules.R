@@ -56,41 +56,38 @@ rule_reg_null_byy <- function(partable) {
 rule_reg_fully_recursive <- function(partable) {
   rule <- "Fully Recursive Rule"
   # retrieve attributes and variable names
-  vars <- get_partable_vars(partable, c("lv", "ov", "eqs.y"))
-  ov.nox <- intersect(vars$eqs.y, vars$ov)
+  vars <- get_partable_vars(partable, c("lv", "eqs.x", "ov.nox"))
   if (length(vars$lv) > 0) {
     out <- build_rule_out(
       rule = rule,
       pass = NA,
       cond = NA_character_,
-      msgs = "[Info] This rule only applies when there are no latent variables in the model"
+      msgs = add_rule_msgs(
+        new_msgs = "This rule only applies when there are no latent variables in the model",
+        levels = "1"
+      )
     )
     return(out)
   }
   # check recursion
-  for (var in ov.nox) {
-    n.paths <- sum(with(partable, op == "~" & rhs %in% ov.nox))
-    comp <- with(partable, lhs[rhs == var & op == "~"])
-    recursive <- check_recursion(
-      partable = partable, base = var,
-      comp = comp,
-      n.paths = n.paths - length(comp)
-    )
-    if (!recursive) break
-  }
+  recursive <- check_recursion(partable, x = vars$eqs.x)
   # check uncorrelated errors of endogenous variables
   covs <- subset(partable, op == "~~" & lhs != rhs & free > 0)
-  cor_err.ov.nox <- with(covs, lhs %in% ov.nox & rhs %in% ov.nox)
+  cor_err.ov.nox <- with(covs, lhs %in% vars$ov.nox & rhs %in% vars$ov.nox)
   # build output
   if (isFALSE(recursive)) {
     pass <- FALSE
-    msgs <- "[Fail] Feedback loops exist in the model, i.e., the model is non-recursive"
+    msgs <- add_rule_msgs(
+      new_msgs = "Feedback loops exist in the model, i.e., the model is non-recursive",
+      levels = "2"
+    )
   } else if (any(cor_err.ov.nox)) {
     pass <- FALSE
     viol <- paste(c(covs$lhs[cor_err.ov.nox], covs$rhs[cor_err.ov.nox]), sep = "/")
-    msgs <- paste(
-      "[Fail] The model is recursive but some endogenous variables have correlated errors:",
-      paste(viol, collapse = ", ")
+    msgs <- add_rule_msgs(
+      new_msgs = paste("The model is recursive but some endogenous variables have correlated errors:",
+                   paste(viol, collapse = ", ")),
+      levels = "2"
     )
   } else {
     pass <- TRUE
@@ -117,28 +114,21 @@ rule_reg_fully_recursive <- function(partable) {
 rule_reg_recursive_corr_err <- function(partable) {
   rule <- "Recur/Corr Err Rule"
   # retrieve attributes and variable names
-  vars <- get_partable_vars(partable, c("lv", "ov", "eqs.y"))
-  ov.nox <- intersect(vars$eqs.y, vars$ov)
+  vars <- get_partable_vars(partable, c("lv", "eqs.x"))
   if (length(vars$lv) > 0) {
     out <- build_rule_out(
       rule = rule,
       pass = NA,
       cond = NA_character_,
-      msgs = "[Info] This rule only applies when there are no latent variables in the model"
+      msgs = add_rule_msgs(
+        new_msgs = "This rule only applies when there are no latent variables in the model",
+        levels = "1"
+      )
     )
     return(out)
   }
   # check recursion
-  for (var in ov.nox) {
-    n.paths <- sum(with(partable, op == "~"))
-    comp <- with(partable, lhs[rhs == var & op == "~"])
-    recursive <- check_recursion(
-      partable = partable, base = var,
-      comp = comp,
-      n.paths = n.paths - length(comp)
-    )
-    if (!recursive) break
-  }
+  recursive <- check_recursion(partable, x = vars$eqs.x)
   # check uncorrelated errors of regression variables
   regs <- subset(partable, op == "~" & free > 0)
   covs <- subset(partable, op == "~~" & lhs != rhs & free > 0)
@@ -151,13 +141,17 @@ rule_reg_recursive_corr_err <- function(partable) {
   # build output
   if (isFALSE(recursive)) {
     pass <- FALSE
-    msgs <- "[Fail] Feedback loops exist in the model, i.e., the model is non-recursive"
+    msgs <- add_rule_msgs(
+      new_msgs = "Feedback loops exist in the model, i.e., the model is non-recursive",
+      levels = "2"
+    )
   } else if (any(cor_err.eqs)) {
     pass <- FALSE
     viol <- paste(covs$lhs[cor_err.eqs], covs$rhs[cor_err.eqs], sep = "/")
-    msgs <- paste(
-      "[Fail] The model is recursive but some directly related variables have correlated errors:",
-      paste(viol, collapse = ", ")
+    msgs <- add_rule_msgs(
+      new_msgs = paste("The model is recursive but some directly related variables have correlated errors:",
+                   paste(viol, collapse = ", ")),
+      levels = "2"
     )
   } else {
     pass <- TRUE

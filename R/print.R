@@ -1,11 +1,13 @@
 #' Printing function for rules list
 #'
-#' @param x A \code{semid} object, i.e., a list of rule output objects.
-#' @param names Character vector. The names of the columns of the main table.
-#' @param include.msgs Logical. If \code{TRUE} messages are printed.
-#' @param msgs.name Character. The name of the messages index column.
-#' @param msgs.sec Character. The name of the messages section.
-#' @param window Integer. The width of the output window.
+#' @param x A \code{lavid} object, i.e., a list of rule output objects.
+#' @param names Character vector. The names of the columns of the main table
+#' @param include.msgs Logical. If \code{TRUE} messages are printed
+#' @param msgs.name Character. The name of the messages index column
+#' @param msgs.sec Character. The name of the messages section
+#' @param msgs.levels Named character vector. The names of the message levels,
+#'        e.g., "1" = "Info", "2" = "Reason", "3" = "WARNING".
+#' @param window Integer. The width of the output window
 #' @param pos.lab Character. The label for positive cells, e.g., "Yes".
 #' @param neg.lab Character. The label for negative cells, e.g., "No".
 #' @param na.lab Character. The label for NA/blank cells.
@@ -14,17 +16,18 @@
 #' @export
 print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient"),
                         include.msgs = TRUE, msgs.name = "Message", msgs.sec = "Messages",
+                        msgs.levels = c("1" = "Info", "2" = "Reason", "3" = "WARNING"),
                         window = 56L, pos.lab = "Yes", neg.lab = "No", na.lab = "-") {
   if (!is.null(x$print.options$include.msgs)) {
     include.msgs <- x$print.options$include.msgs
   }
   if (include.msgs) {
     names[5] <- msgs.name
-    msgs <- c()
+    msgs <- c() # global message vector
   }
   cols_width <- sum(nchar(names[-1])) + length(names[-1])
   names[1] <- format(names[1], width = window - cols_width)
-  widx <- 0 # warning index
+  widx <- 0 # global warning index
 
   version <- utils::packageVersion("semID")
   cat(sprintf("semID %s Rule Check\n\n", version))
@@ -65,6 +68,7 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
       idx.w0 <- c()
       for (msg in this_rule$msgs) {
         if (msg %in% msgs) {
+          # prevent duplicate messages
           idx.w0 <- c(idx.w0, which(msgs == msg))
         } else {
           widx <- widx + 1
@@ -86,6 +90,7 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
   if (include.msgs && widx > 0) {
     cat("---", msgs.sec, sep = "\n")
     for (i in 1:widx) {
+      # make space for index, e.g., "1 - ", "2 - ", etc.
       m0 <- strwrap(msgs[i], width = window - 4L)
       ls <- length(m0)
       m0[1] <- paste0(sprintf("%s - ", i), m0[1])
