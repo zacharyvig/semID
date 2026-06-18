@@ -19,7 +19,7 @@ rule_sem_ntheta <- function(partable) {
   rule <- "N_theta Rule"
   pass <- isTRUE(npar <= ndat)
   msgs <- ifelse(
-    pass, NA,
+    pass, NA_character_,
     sprintf("[WARNING] The number of free parameters (x%s) exceeds the number of means/variances/covariances (x%s)", npar, ndat)
   )
   out <- build_rule_out(
@@ -53,14 +53,14 @@ rule_sem_latent_scaling <- function(partable) {
     return(out)
   }
   # build output
-  scaled <- scaling(partable, lv = vars$lv)
+  scaled <- scaling(partable, lv = vars$lv, return.type = "logical")
   pass <- isTRUE(all(scaled))
   cond <- "N"
   if (!pass) {
     msgs <- paste("[WARNING] Some latent variables are not scaled:",
               paste(vars$lv[!scaled], collapse = ", "))
   } else {
-    msgs <- NA
+    msgs <- NA_character_
   }
   out <- build_rule_out(
     rule = rule,
@@ -127,7 +127,7 @@ rule_sem_two_emitted_paths <- function(partable) {
       rule = rule,
       pass = NA,
       msgs = "[Info] There are no variables (with free variance & free downstream disturbance variances) to which to apply the rule",
-      cond = NA
+      cond = NA_character_
     )
     return(out)
   } else {
@@ -163,7 +163,7 @@ rule_sem_two_emitted_paths <- function(partable) {
       )
     )
   }
-  if (length(msgs) == 0) msgs <- NA
+  if (length(msgs) == 0) msgs <- NA_character_
   out <- build_rule_out(
     rule = rule,
     pass = pass,
@@ -218,12 +218,13 @@ rule_sem_exogenous_x <- function(partable) {
     pass <- isTRUE(n.ind >= 2)
     cond <- "S"
     msgs <- ifelse(
-      pass, NA,
+      pass, NA_character_,
       "[Fail] The model must have more than one effect indicator"
       )
   } else {
     # TODO: finish multiple LV MIMIC rule
-    pass <- cond <- NA
+    pass <- NA
+    cond <- NA_character_
     msgs <- "[Info] This rule is currently not supported for multiple latent variables"
   }
   out <- build_rule_out(

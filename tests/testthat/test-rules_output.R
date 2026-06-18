@@ -13,8 +13,9 @@ test_that("rules produce the correct output", {
 test_that("rule titles should be correct length", {
   rules <- get_rule_names(model_type = "all")
   partable <- lavaan::lavaanify("y ~ x", warn = FALSE)
-  test <- capture.output(id(partable))[1]
-  blank <- sub("^(\\s+)([A-Za-z\\s]+)$", "\\1", test, perl = TRUE)
+  test <- capture.output(id(partable))
+  header <- grep("Pass", test)
+  blank <- sub("^(\\s+)([A-Za-z\\s]+)$", "\\1", test[header], perl = TRUE)
   for (rule in rules) {
     title <- do.call(rule, list(partable))$rule
     expect_lt(nchar(!!title), nchar(blank))

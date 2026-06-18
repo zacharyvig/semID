@@ -153,7 +153,7 @@ rule_cfa_two_indicator <- function(partable) {
     with(covs, any(lhs == var & rhs %in% vars$lv | rhs == var & lhs %in% vars$lv))
   }, simplify = TRUE)
   # messages
-  msgs <- c()
+  msgs <- character()
   if (any(nlv.ind > 0)) {
     cond <- NA_character_
     msgs <- c(msgs, "[Info] Cannot establish sufficiency when higher order factors are present; pass/fail applies to first order factors only")

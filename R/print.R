@@ -1,25 +1,22 @@
 #' Printing function for rules list
 #'
-#' @param x A \code{lavid} object, i.e., a list of rule output objects.
-#' @param names Character vector. The names of the columns of the main table
-#' @param include.msgs Logical. If \code{TRUE} messages are printed
-#' @param msgs.name Character. The name of the messages index column
-#' @param msgs.sec Character. The name of the messages section
-#' @param window Integer. The width of the output window
+#' @param x A \code{semid} object, i.e., a list of rule output objects.
+#' @param names Character vector. The names of the columns of the main table.
+#' @param include.msgs Logical. If \code{TRUE} messages are printed.
+#' @param msgs.name Character. The name of the messages index column.
+#' @param msgs.sec Character. The name of the messages section.
+#' @param window Integer. The width of the output window.
 #' @param pos.lab Character. The label for positive cells, e.g., "Yes".
 #' @param neg.lab Character. The label for negative cells, e.g., "No".
 #' @param na.lab Character. The label for NA/blank cells.
-#' @param ... Not currently used
+#' @param ... Not currently used.
 #'
 #' @export
-print.lavid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient"),
+print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient"),
                         include.msgs = TRUE, msgs.name = "Message", msgs.sec = "Messages",
                         window = 56L, pos.lab = "Yes", neg.lab = "No", na.lab = "-") {
-  names <- c(
-    "", "Pass", "Necessary", "Sufficient"
-  )
-  if (!is.null(attr(x, "include.msgs"))) {
-    include.msgs <- attr(x, "include.msgs")
+  if (!is.null(x$print.options$include.msgs)) {
+    include.msgs <- x$print.options$include.msgs
   }
   if (include.msgs) {
     names[5] <- msgs.name
@@ -29,17 +26,20 @@ print.lavid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
   names[1] <- format(names[1], width = window - cols_width)
   widx <- 0 # warning index
 
+  version <- utils::packageVersion("semID")
+  cat(sprintf("semID %s Rule Check\n\n", version))
+
   cat(names, strrep("\n", 1L))
 
-  for (i in 1:length(x)) {
-    this_rule <- x[[i]]
+  for (i in seq_along(x$Rules)) {
+    this_rule <- x$Rules[[i]]
     row <- c(
       # rule title
       format(
         this_rule$rule,
         width = window - cols_width
       ),
-      # pass?
+      # did the rule pass?
       format(
         switch(
           as.character(this_rule$pass),
@@ -101,4 +101,27 @@ print.lavid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
 
   cat("\n")
 
+}
+
+
+#' Printing function for scaling table
+#' 
+#' @param x A \code{semscale} object, i.e., a list of scaling information for each latent variable in the model.
+#' @param include.msgs Logical. If \code{TRUE} messages are printed.
+#' @param window Integer. The width of the output window.
+#' @param ... Not currently used.
+#'
+#' @export
+print.semscale <- function(x, ..., include.msgs = TRUE, window = 56L) {
+  if (is.na(x)) {
+    cat("No latent variables in the model\n")
+    return(invisible(x))
+  }
+
+  version <- utils::packageVersion("semID")
+  cat(sprintf("semID %s Latent Variable Scaling\n\n", version))
+
+  cat("Scaling print method still in development. Look at the object directly for now.\n")
+
+  return(invisible(x))
 }

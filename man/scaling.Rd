@@ -2,31 +2,107 @@
 % Please edit documentation in R/scaling.R
 \name{scaling}
 \alias{scaling}
+\alias{scaling.semid}
+\alias{scaling.lavaan}
+\alias{scaling.character}
+\alias{scaling.data.frame}
+\alias{scaling.default}
 \title{Check if latent variables are correctly scaled}
 \usage{
-scaling(partable, lv = NULL)
+scaling(
+  x,
+  include.msgs = TRUE,
+  lv = NULL,
+  return.type = c("object", "logical"),
+  ...
+)
+
+\method{scaling}{semid}(
+  x,
+  include.msgs = TRUE,
+  lv = NULL,
+  return.type = c("object", "logical"),
+  ...
+)
+
+\method{scaling}{lavaan}(
+  x,
+  include.msgs = TRUE,
+  lv = NULL,
+  return.type = c("object", "logical"),
+  ...
+)
+
+\method{scaling}{character}(
+  x,
+  include.msgs = TRUE,
+  lv = NULL,
+  return.type = c("object", "logical"),
+  ...
+)
+
+\method{scaling}{data.frame}(
+  x,
+  include.msgs = TRUE,
+  lv = NULL,
+  return.type = c("object", "logical"),
+  ...
+)
+
+\method{scaling}{default}(
+  x,
+  include.msgs = TRUE,
+  lv = NULL,
+  return.type = c("table", "logical"),
+  ...
+)
 }
 \arguments{
-\item{partable}{A \code{lavaan} parameter table}
+\item{x}{A \code{lavaan} parameter table or a \code{semID} ID object.}
+
+\item{include.msgs}{Logical. If \code{TRUE} the output will print why a 
+latent variable is not scaled when applicable and the method or methods
+by which it is scaled when it is scaled. If \code{FALSE}, the output will
+only print whether the latent variable is scaled or not and a few other
+descriptives.}
 
 \item{lv}{An optional character vector of the specific latent variables you
 would like to check. Otherwise, all latent variables are extracted from the
 parameter table}
+
+\item{return.type}{A character string specifying the type of output. Options
+include "logical" (a logical vector specifying whether each latent variable is
+correctly scaled) or "table" (a data frame with additional information about the
+scaling of each latent variable). The latter is of type \code{scaling.table} and
+has a custom print method for additional diagnosis of identification issues.}
+
+\item{...}{Additional arguments passed to the \code{lavaanify} function from
+\code{lavaan}. See \link[lavaan]{lavaanify} for more information. These are
+only used when a model string is supplied. Otherwise, they are ignored.}
 }
 \value{
-An (invisible) logical vector specifying whether each latent variable
-(included as the names of the vector) is correctly scaled
+An object of class \code{scaling.table} (if \code{return.type = "table"})
+or a logical vector (if \code{return.type = "logical"}) indicating whether each
+latent variable is correctly scaled.
 }
 \description{
-This is a helper function for checking whether all latent variables in a model
-are scaled.
+This function checks whether latent variables in the model are scaled,
+which is a necessary condition for model identification. A latent variable
+with one indicator is not scaled, though there are methods to achieve identification
+using a known reliability coefficient (see Bollen, 2026). This function always
+returns \code{FALSE} in the case of one indicator. A latent variable with two indicators
+is scaled if both loadings are fixed. A latent variable with three or more indicators is
+scaled if (a) it has a scaling indicator (an indicator with a fixed loading) which
+also has a fixed mean, (b) it has a scaling indicator and its variance is fixed,
+or (c) both its mean and variance are fixed. If any latent variable is not scaled,
+the model is not identified.
 }
 \examples{
 \dontrun{
-mod1 <- ' l1 =~ x1 + x2
-          l2 =~ x3 + x4 + x5 '
-mod1.partable <- lavaan::lavaanify(mod1, auto = TRUE, model.type = "sem")
-mod1.scaled <- scaling(mod1.partable, lv = "l2")
+ mod1 <- ' l1 =~ x1 + x2
+           l2 =~ x3 + x4 + x5 '
+ mod1.partable <- lavaan::lavaanify(mod1, auto = TRUE, model.type = "sem")
+ mod1.scaled <- scaling(mod1.partable, lv = "l2")
 }
 
 }

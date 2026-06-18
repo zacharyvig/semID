@@ -2,12 +2,27 @@
 % Please edit documentation in R/id.R
 \name{id}
 \alias{id}
+\alias{id.semscale}
+\alias{id.lavaan}
+\alias{id.character}
+\alias{id.data.frame}
+\alias{id.default}
 \title{Evaluate common Structural Equation Model (SEM) identification rules}
 \usage{
-id(model = NULL, include.msgs = TRUE, call = "sem", ...)
+id(x, include.msgs = TRUE, call = "sem", ...)
+
+\method{id}{semscale}(x, include.msgs = TRUE, call = "sem", ...)
+
+\method{id}{lavaan}(x, include.msgs = TRUE, call = "sem", ...)
+
+\method{id}{character}(x, include.msgs = TRUE, call = "sem", ...)
+
+\method{id}{data.frame}(x, include.msgs = TRUE, call = "sem", ...)
+
+\method{id}{default}(x, include.msgs = TRUE, call = "sem", ...)
 }
 \arguments{
-\item{model}{A character string model in \code{lavaan} syntax, a
+\item{x}{A character string model in \code{lavaan} syntax, a
 \code{lavaan} parameter table, or a fitted \code{lavaan} object.}
 
 \item{include.msgs}{Logical. If \code{TRUE}, the output will include why a rule 
@@ -19,10 +34,11 @@ currently include "lavaan", "sem", or "cfa". If a parameter table for fit
 object are supplied, this argument is ignored.}
 
 \item{...}{Additional arguments passed to the \code{lavaanify} function from
-\code{lavaan}. See \link[lavaan]{lavaanify} for more information.}
+\code{lavaan}. See \link[lavaan]{lavaanify} for more information. If parameter
+tables or fitted model objects are supplied, these arguments are ignored.}
 }
 \value{
-The \code{lavaan} parameter table for the model (invisibly).
+An object of class \code{semid}.
 }
 \description{
 This is the "workhorse" function of the \code{semID} package. The user supplies

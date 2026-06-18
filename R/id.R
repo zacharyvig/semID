@@ -26,7 +26,7 @@
 #' a parameter table or fitted model object ignores the \code{call} argument since
 #' defaults will have already been implemented.
 #'
-#' @param model A character string model in \code{lavaan} syntax, a
+#' @param x A character string model in \code{lavaan} syntax, a
 #'  \code{lavaan} parameter table, or a fitted \code{lavaan} object.
 #' @param include.msgs Logical. If \code{TRUE}, the output will include why a rule 
 #' does not pass or is not applicable, along with any other helpful information.
@@ -35,9 +35,10 @@
 #'  currently include "lavaan", "sem", or "cfa". If a parameter table for fit
 #'  object are supplied, this argument is ignored.
 #' @param ... Additional arguments passed to the \code{lavaanify} function from
-#'  \code{lavaan}. See \link[lavaan]{lavaanify} for more information.
+#'  \code{lavaan}. See \link[lavaan]{lavaanify} for more information. If parameter
+#'  tables or fitted model objects are supplied, these arguments are ignored.
 #'
-#' @return The \code{lavaan} parameter table for the model (invisibly).
+#' @return An object of class \code{semid}.
 #'
 #' @examples
 #' # Holzinger and Swineford (1939) example
@@ -46,11 +47,10 @@
 #'               speed   =~ x7 + x8 + x9 '
 #' id(HS.model, include.msgs = TRUE, call = "cfa", 
 #'    meanstructure = FALSE)
-#'
+#' 
+#' @name id
 #' @export
-id <- function(model = NULL, include.msgs = TRUE, call = "sem", ...) {
-  dotdotdot <- list(...)
-  # Checks
+id <- function(x, include.msgs = TRUE, call = "sem", ...) {
   stopifnot(
     "Argument `include.msgs` must be a logical" =
       is.logical(include.msgs)
@@ -59,6 +59,33 @@ id <- function(model = NULL, include.msgs = TRUE, call = "sem", ...) {
     "Unknown `call` or `call` currently not supported" =
       call %in% c("lavaan", "sem", "cfa")
   )
+  UseMethod("id")
+}
+
+#' @rdname id
+#' @export
+id.semscale <- function(x, include.msgs = TRUE, call = "sem", ...) {
+  return(id.data.frame(x$partable, include.msgs = include.msgs, call = call, ...))
+}
+
+#' @rdname id
+#' @export
+id.lavaan <- function(x, include.msgs = TRUE, call = "sem", ...) {
+  dotdotdot <- list(...)
+  if (length(dotdotdot) > 0) {
+    warning("Additional arguments are ignored when a fitted lavaan object is supplied")
+  }
+  partable <- as.data.frame(
+    x@ParTable,
+    stringsAsFactors = FALSE
+  )
+  return(id.data.frame(partable, include.msgs = include.msgs, call = call, ...))
+}
+
+#' @rdname id
+#' @export
+id.character <- function(x, include.msgs = TRUE, call = "sem", ...) {
+  dotdotdot <- list(...)
   if (isTRUE(dotdotdot$model.type == "efa")) {
     dotdotdot[["model.type"]] <- NULL
     warning("Only `model.type='sem'` is currently supported")
@@ -70,43 +97,35 @@ id <- function(model = NULL, include.msgs = TRUE, call = "sem", ...) {
   if (is.null(dotdotdot$auto)) {
     dotdotdot$auto <- (call != "lavaan")
   }
+  args <- c(
+    list(
+      model = x,
+      warn = TRUE,
+      debug = FALSE,
+      model.type = "sem"
+    ),
+    dotdotdot
+  )
+  partable <- do.call(lavaan::lavaanify, args)
+  return(id.data.frame(partable, include.msgs = include.msgs, call = call, ...))
+}
 
-  # STEP 0 - Parse input
-  if (inherits(model, "lavaan")) {
-    partable <- as.data.frame(
-      model@ParTable,
-      stringsAsFactors = FALSE
-      )
-    input <- "fit"
-  # check if already partable (from lav_partable)
-  } else if (is.list(model) && !is.null(model$lhs)) {
-    if (is.null(model$mod.idx)) {
-      partable <- model
-      input <- "partable"
-    }
+#' @rdname id
+#' @export
+id.data.frame <- function(x, include.msgs = TRUE, call = "sem", ...) {
+  if (is.list(x) && !is.null(x$lhs) && is.null(x$mod.idx)) {
+    partable <- x
   } else {
-    args <- c(
-      list(
-        model = model,
-        warn = TRUE,
-        debug = FALSE,
-        model.type = "sem"
-      ),
-      dotdotdot
-    )
-    partable <- do.call(lavaan::lavaanify, args)
-    input <- "syntax"
+    stop("Unknown list format. Please supply a lavaan parameter table or fitted model object.")
   }
 
   # STEP 1 - Classify model
-  model_type <- classify_model(partable)
-  if (is.na(model_type) | model_type == "mlm") {
+  model.type <- classify_model(partable)
+  if (is.na(model.type) | model.type == "mlm") {
     stop("This model type is not currently supported")
   }
-  if(input == "syntax") {
-    if (call == "cfa" && call != model_type) {
+  if (call == "cfa" && model.type != "cfa") {
       warning("`sem()` or `lavaan()` may be more appropirate calls for this type of model")
-    }
   }
 
   # STEP 2 - Evaluate rules
@@ -117,8 +136,23 @@ id <- function(model = NULL, include.msgs = TRUE, call = "sem", ...) {
     )
   )
 
-  class(rules) <- c("lavid", "list")
-  attr(rules, "include.msgs") <- include.msgs
+  out <- list( 
+    model.type = model.type,
+    Rules = rules,
+    partable = partable,
+    print.options = list(
+      include.msgs = include.msgs
+    )
+  )
 
-  return(rules)
+  class(out) <- "semid"
+
+  return(out)
+
+}
+
+#' @rdname id
+#' @export
+id.default <- function(x, include.msgs = TRUE, call = "sem", ...) {
+  stop("Unknown model format. Please supply a model string, lavaan parameter table, or fitted model object.")
 }

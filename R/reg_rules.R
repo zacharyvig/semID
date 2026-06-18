@@ -36,7 +36,7 @@ rule_reg_null_byy <- function(partable) {
     )
   } else {
     pass <- TRUE
-    msgs <- NA
+    msgs <- NA_character_
   }
   out <- build_rule_out(
     rule = rule,
@@ -94,7 +94,7 @@ rule_reg_fully_recursive <- function(partable) {
     )
   } else {
     pass <- TRUE
-    msgs <- NA
+    msgs <- NA_character_
   }
   out <- build_rule_out(
     rule = rule,
@@ -161,7 +161,7 @@ rule_reg_recursive_corr_err <- function(partable) {
     )
   } else {
     pass <- TRUE
-    msgs <- NA
+    msgs <- NA_character_
   }
   out <- build_rule_out(
     rule = rule,
