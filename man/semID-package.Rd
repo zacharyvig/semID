@@ -11,10 +11,5 @@ In order for structural equation model (SEM) estimation to be reliable, the mode
 \author{
 \strong{Maintainer}: Zach Vig \email{zachvig@unc.edu}
 
-Authors:
-\itemize{
-  \item Zach Vig \email{zachvig@unc.edu}
-}
-
 }
 \keyword{internal}

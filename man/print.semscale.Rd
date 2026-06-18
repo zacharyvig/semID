@@ -4,16 +4,41 @@
 \alias{print.semscale}
 \title{Printing function for scaling table}
 \usage{
-\method{print}{semscale}(x, ..., include.msgs = TRUE, window = 56L)
+\method{print}{semscale}(
+  x,
+  ...,
+  include.msgs = TRUE,
+  window = 56L,
+  indent.lens = c(0L, 2L, 2L),
+  na.lab = "na",
+  pos.lab = "Yes",
+  neg.lab = "No",
+  empty.lab = "None",
+  bullet = "-"
+)
 }
 \arguments{
-\item{x}{A \code{semscale} object, i.e., a list of scaling information for each latent variable in the model.}
+\item{x}{A \code{semscale} object, i.e., a list of scaling information
+for each latent variable in the model.}
 
 \item{...}{Not currently used.}
 
 \item{include.msgs}{Logical. If \code{TRUE} messages are printed.}
 
 \item{window}{Integer. The width of the output window.}
+
+\item{indent.lens}{Integer vector of length 3. The number of spaces to indent
+for each level of information (currently there are three supported).}
+
+\item{na.lab}{Character. The label for NA/blank cells.}
+
+\item{pos.lab}{Character. The label for positive cells, e.g., "Yes".}
+
+\item{neg.lab}{Character. The label for negative cells, e.g., "No".}
+
+\item{empty.lab}{Character. The label for empty cells, e.g., "None".}
+
+\item{bullet}{Character. The bullet symbol for messages, e.g., "-".}
 }
 \description{
 Printing function for scaling table

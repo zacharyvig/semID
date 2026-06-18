@@ -151,7 +151,7 @@ rule_sem_two_emitted_paths <- function(partable) {
     cond <- "N"
   }
   # messages
-  msgs <- c()
+  msgs <- NA_character_
   if (!pass) {
     msgs <- add_rule_msgs(
       msgs,

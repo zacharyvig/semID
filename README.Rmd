@@ -21,9 +21,10 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/zacharyvig/semID/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/zacharyvig/semID/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-semID allows the user to input a Structural Equation Model (SEM) in `lavaan` (Roseel, 2012) syntax and check it against a number of identification rules from the literature.
-Rules are specified as being necessary and/or sufficient and specific reasons are given when a rule is broken. Caution is given to the user in using the output
-of the package as the sole determinant of model identification -- instead, it should be used as a "quick check" for any outstanding issues with the model.
+semID allows the user to input a Structural Equation Model (SEM) in [`lavaan`](https://lavaan.ugent.be/) (Roseel, 2012) syntax and check it against a number of
+identification rules from the literature. Rules are specified as being necessary and/or sufficient and specific reasons are given when a rule is broken. Caution
+is given to the user in using the output of the package as the sole determinant of model identification -- instead, it should be used as a "quick check" for any
+outstanding issues with the model.
 
 ## Installation
 
@@ -45,5 +46,7 @@ HS.model <- ' visual  =~ x1 + x2 + x3
               textual =~ x4 + x5 + x6
               speed   =~ x7 + x8 + x9 '
 id(HS.model, include.msgs = TRUE, call = "cfa", 
-   meanstructure = FALSE)
+   meanstructure = FALSE) # check identification rules
+scaling(HS.model, include.msgs = TRUE, call = "cfa", 
+        meanstructure = FALSE) # check latent variable scaling
 ```

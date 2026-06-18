@@ -12,6 +12,10 @@
 #' the model is not identified.
 #'
 #' @param x A \code{lavaan} parameter table or a \code{semID} ID object.
+#' @param call A character string specifying the call you intend to use to fit
+#'  the model. This will ensure the correct model defaults are specified. Options
+#'  currently include "lavaan", "sem", or "cfa". If a parameter table for fit
+#'  object are supplied, this argument is ignored.
 #' @param include.msgs Logical. If \code{TRUE} the output will print why a 
 #' latent variable is not scaled when applicable and the method or methods
 #' by which it is scaled when it is scaled. If \code{FALSE}, the output will
@@ -43,23 +47,35 @@
 #'  mod1.scaled <- scaling(mod1.partable, lv = "l2")
 #' }
 #'
-scaling <- function(x, include.msgs = TRUE, lv = NULL, return.type = c("object", "logical"), ...) {
+scaling <- function(x, call = "sem", include.msgs = TRUE, lv = NULL, 
+                    return.type = c("object", "logical"), ...) {                  
   stopifnot(
     "Argument `lv` must be a character vector or NULL" =
       is.character(lv) || is.null(lv)
+  )
+  stopifnot(
+    "Argument `include.msgs` must be a logical" =
+      is.logical(include.msgs)
+  )
+  stopifnot(
+    "Unknown `call` or `call` currently not supported" =
+      call %in% c("lavaan", "sem", "cfa")
   )
   UseMethod("scaling")
 }
 
 #' @rdname scaling
 #' @export
-scaling.semid <- function(x, include.msgs = TRUE, lv = NULL, return.type = c("object", "logical"), ...) {
+scaling.semid <- function(x, call = "sem", include.msgs = TRUE, lv = NULL, 
+                          return.type = c("object", "logical"), ...) {
+  print.semid(x)
   return(scaling.data.frame(x$partable, include.msgs = include.msgs, lv = lv, return.type = return.type))
 }
 
 #' @rdname scaling
 #' @export
-scaling.lavaan <- function(x, include.msgs = TRUE, lv = NULL, return.type = c("object", "logical"), ...) {
+scaling.lavaan <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
+                           return.type = c("object", "logical"), ...) {
   dotdotdot <- list(...)
   if (length(dotdotdot) > 0) {
     warning("Additional arguments are ignored when a fitted lavaan object is supplied")
@@ -73,7 +89,8 @@ scaling.lavaan <- function(x, include.msgs = TRUE, lv = NULL, return.type = c("o
 
 #' @rdname scaling
 #' @export
-scaling.character <- function(x, include.msgs = TRUE, lv = NULL, return.type = c("object", "logical"), ...) {
+scaling.character <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
+                              return.type = c("object", "logical"), ...) {
   dotdotdot <- list(...)
   if (isTRUE(dotdotdot$model.type == "efa")) {
     dotdotdot[["model.type"]] <- NULL
@@ -82,6 +99,9 @@ scaling.character <- function(x, include.msgs = TRUE, lv = NULL, return.type = c
   if (isTRUE(dotdotdot$debug)) {
     dotdotdot[["debug"]] <- NULL
     warning("Ignoring `debug`")
+  }
+  if (is.null(dotdotdot$auto)) {
+    dotdotdot$auto <- (call != "lavaan")
   }
   args <- c(
     list(
@@ -98,9 +118,13 @@ scaling.character <- function(x, include.msgs = TRUE, lv = NULL, return.type = c
 
 #' @rdname scaling
 #' @export
-scaling.data.frame <- function(x, include.msgs = TRUE, lv = NULL, return.type = c("object", "logical"), ...) {
-  return.type <- match.arg(return.type)
-  meanstructure <- any(x$op == "~1")
+scaling.data.frame <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
+                               return.type = c("object", "logical"), ...) {
+  return.type <- match.arg(return.type) 
+  if (!(is.list(x) && !is.null(x$lhs) && is.null(x$mod.idx))) {
+    stop("Unknown list format. Please supply a lavaan parameter table or fitted model object.")
+  }
+  
   if (is.null(lv)) {
     # retrieve attributes and variable names
     vars <- get_partable_vars(x, "lv")
@@ -124,6 +148,9 @@ scaling.data.frame <- function(x, include.msgs = TRUE, lv = NULL, return.type = 
     out <- vector(length = length(lv))
     names(out) <- lv
   }
+
+  meanstructure <- any(x$op == "~1")
+
   for (i in seq_along(lv)) {
     var <- lv[i]
     if (return.type == "object") {
@@ -139,7 +166,7 @@ scaling.data.frame <- function(x, include.msgs = TRUE, lv = NULL, return.type = 
       } else {
         out[var] <- FALSE
       }
-      break
+      next
     }
     # two-indicator case / no lv correlations
     two.ind <- sum(with(x, lhs == var & op == "=~")) == 2
@@ -152,17 +179,15 @@ scaling.data.frame <- function(x, include.msgs = TRUE, lv = NULL, return.type = 
       if (return.type == "object") {
         scaling.tables[[i]]$scaled <- check0
         scaling.tables[[i]]$n.indicators <- 2
-      } else {
-        out[var] <- check0
-      }
-      if (return.type == "object") {
         if (!check0) {
           scaling.tables[[i]]$fail.reason <- "Two indicators but one or both loadings not fixed"
         } else {
           scaling.tables[[i]]$scaling.method <- "Two indicators with fixed loadings"
         }
+      } else {
+        out[var] <- check0
       }
-      break
+      next
     }
     # scaling indicator?
     scale.ind.idx <- with(x, lhs == var & op == "=~" &
@@ -191,7 +216,7 @@ scaling.data.frame <- function(x, include.msgs = TRUE, lv = NULL, return.type = 
     final_check <- c(check1 && check2, check3 && check4, check1 && check3)
     if (return.type == "logical") {
       out[var] <- any(final_check)
-      break
+      next
     }
     # if table requested...
     scaling.tables[[i]]$scaled <- TRUE
@@ -238,6 +263,7 @@ scaling.data.frame <- function(x, include.msgs = TRUE, lv = NULL, return.type = 
 
 #' @rdname scaling
 #' @export
-scaling.default <- function(x, include.msgs = TRUE, lv = NULL, return.type = c("table", "logical"), ...) {
+scaling.default <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
+                            return.type = c("table", "logical"), ...) {
   stop("Unknown object type. Please supply a model string, lavaan parameter table, or fitted model object.")
 }

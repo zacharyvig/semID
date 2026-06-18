@@ -65,6 +65,7 @@ id <- function(x, include.msgs = TRUE, call = "sem", ...) {
 #' @rdname id
 #' @export
 id.semscale <- function(x, include.msgs = TRUE, call = "sem", ...) {
+  print(x)
   return(id.data.frame(x$partable, include.msgs = include.msgs, call = call, ...))
 }
 

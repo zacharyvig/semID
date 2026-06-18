@@ -19,17 +19,17 @@
 )
 }
 \arguments{
-\item{x}{A \code{semid} object, i.e., a list of rule output objects.}
+\item{x}{A \code{lavid} object, i.e., a list of rule output objects.}
 
 \item{...}{Not currently used.}
 
-\item{names}{Character vector. The names of the columns of the main table.}
+\item{names}{Character vector. The names of the columns of the main table}
 
-\item{include.msgs}{Logical. If \code{TRUE} messages are printed.}
+\item{include.msgs}{Logical. If \code{TRUE} messages are printed}
 
-\item{msgs.name}{Character. The name of the messages index column.}
+\item{msgs.name}{Character. The name of the messages index column}
 
-\item{msgs.sec}{Character. The name of the messages section.}
+\item{msgs.sec}{Character. The name of the messages section}
 
 \item{msgs.levels}{Named character vector. The names of the message levels,
 e.g., "1" = "Info", "2" = "Reason", "3" = "WARNING".}

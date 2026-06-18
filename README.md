@@ -9,13 +9,13 @@
 <!-- badges: end -->
 
 semID allows the user to input a Structural Equation Model (SEM) in
-`lavaan` (Roseel, 2012) syntax and check it against a number of
-identification rules from the literature. Rules are specified as being
-necessary and/or sufficient and specific reasons are given when a rule
-is broken. Caution is given to the user in using the output of the
-package as the sole determinant of model identification – instead, it
-should be used as a “quick check” for any outstanding issues with the
-model.
+[`lavaan`](https://lavaan.ugent.be/) (Roseel, 2012) syntax and check it
+against a number of identification rules from the literature. Rules are
+specified as being necessary and/or sufficient and specific reasons are
+given when a rule is broken. Caution is given to the user in using the
+output of the package as the sole determinant of model identification –
+instead, it should be used as a “quick check” for any outstanding issues
+with the model.
 
 ## Installation
 
@@ -31,17 +31,19 @@ You can install the development version of semID from
 
 ``` r
 library(semID)
-#> semID 0.3.0 is still in the development phase
+#> semID 0.3.2 is still in the development phase
 
 # Holzinger and Swineford (1939) example
 HS.model <- ' visual  =~ x1 + x2 + x3
               textual =~ x4 + x5 + x6
               speed   =~ x7 + x8 + x9 '
 id(HS.model, include.msgs = TRUE, call = "cfa", 
-   meanstructure = FALSE)
+   meanstructure = FALSE) # check identification rules
+#> semID 0.3.2 Rule Check
+#> 
 #>                        Pass Necessary Sufficient Message 
-#> Three Indicator Rule    Yes        No        Yes         
-#> Two Indicator Rule      Yes        No        Yes         
+#> Three Indicator Rule    Yes        No        Yes 
+#> Two Indicator Rule      Yes        No        Yes 
 #> Fully Recursive Rule      -         -          -       1 
 #> Null B_YY Rule            -         -          -       1 
 #> Recur/Corr Err Rule       -         -          -       1 
@@ -55,4 +57,31 @@ id(HS.model, include.msgs = TRUE, call = "cfa",
 #>     latent variables in the model
 #> 2 - [Info] This rule only applies when causal
 #>     indicators are in the model
+scaling(HS.model, include.msgs = TRUE, call = "cfa", 
+        meanstructure = FALSE) # check latent variable scaling
+#> semID 0.3.2 Latent Variable Scaling
+#> 
+#> visual
+#>   LV is scaled: Yes
+#>   No. of indicators: 3
+#>   Scaling indicator: x1
+#> 
+#>   Scaling method(s):
+#>   - Scaling indicator with fixed mean
+#> 
+#> textual
+#>   LV is scaled: Yes
+#>   No. of indicators: 3
+#>   Scaling indicator: x4
+#> 
+#>   Scaling method(s):
+#>   - Scaling indicator with fixed mean
+#> 
+#> speed
+#>   LV is scaled: Yes
+#>   No. of indicators: 3
+#>   Scaling indicator: x7
+#> 
+#>   Scaling method(s):
+#>   - Scaling indicator with fixed mean
 ```

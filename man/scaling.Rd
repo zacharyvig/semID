@@ -11,6 +11,7 @@
 \usage{
 scaling(
   x,
+  call = "sem",
   include.msgs = TRUE,
   lv = NULL,
   return.type = c("object", "logical"),
@@ -19,6 +20,7 @@ scaling(
 
 \method{scaling}{semid}(
   x,
+  call = "sem",
   include.msgs = TRUE,
   lv = NULL,
   return.type = c("object", "logical"),
@@ -27,6 +29,7 @@ scaling(
 
 \method{scaling}{lavaan}(
   x,
+  call = "sem",
   include.msgs = TRUE,
   lv = NULL,
   return.type = c("object", "logical"),
@@ -35,6 +38,7 @@ scaling(
 
 \method{scaling}{character}(
   x,
+  call = "sem",
   include.msgs = TRUE,
   lv = NULL,
   return.type = c("object", "logical"),
@@ -43,6 +47,7 @@ scaling(
 
 \method{scaling}{data.frame}(
   x,
+  call = "sem",
   include.msgs = TRUE,
   lv = NULL,
   return.type = c("object", "logical"),
@@ -51,6 +56,7 @@ scaling(
 
 \method{scaling}{default}(
   x,
+  call = "sem",
   include.msgs = TRUE,
   lv = NULL,
   return.type = c("table", "logical"),
@@ -59,6 +65,11 @@ scaling(
 }
 \arguments{
 \item{x}{A \code{lavaan} parameter table or a \code{semID} ID object.}
+
+\item{call}{A character string specifying the call you intend to use to fit
+the model. This will ensure the correct model defaults are specified. Options
+currently include "lavaan", "sem", or "cfa". If a parameter table for fit
+object are supplied, this argument is ignored.}
 
 \item{include.msgs}{Logical. If \code{TRUE} the output will print why a 
 latent variable is not scaled when applicable and the method or methods

@@ -65,7 +65,7 @@ rule_cfa_three_indicator <- function(partable) {
     with(covs, any(lhs == ind & rhs %in% ind.fof | rhs == ind & lhs %in% ind.fof))
   }, simplify = TRUE)
   # messages
-  msgs <- c()
+  msgs <- NA_character_
   if (any(nlv.ind > 0)) {
     cond <- NA_character_
     msgs <- add_rule_msgs(
@@ -180,7 +180,7 @@ rule_cfa_two_indicator <- function(partable) {
     with(covs, any(lhs == var & rhs %in% vars$lv | rhs == var & lhs %in% vars$lv))
   }, simplify = TRUE)
   # messages
-  msgs <- character()
+  msgs <- NA_character_
   if (any(nlv.ind > 0)) {
     cond <- NA_character_
     msgs <- add_rule_msgs(
