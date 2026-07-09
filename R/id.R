@@ -25,20 +25,29 @@
 #' be used) when fitting the model in the case a model string is supplied. Supplying
 #' a parameter table or fitted model object ignores the \code{call} argument since
 #' defaults will have already been implemented.
+#' 
+#' \code{id2} is a wrapper function for calling \code{id} with argument \code{twostep}
+#' set to \code{TRUE}. The two-step method parses an SEM into a CFA model and a latent
+#' variable/structural model, and evaluates the identification rules on each. If both
+#' parts are identified, the whole model is identified.
 #'
 #' @param x A character string model in \code{lavaan} syntax, a
 #'  \code{lavaan} parameter table, or a fitted \code{lavaan} object.
 #' @param include.msgs Logical. If \code{TRUE}, the output will include why a rule 
 #' does not pass or is not applicable, along with any other helpful information.
+#' Default: \code{TRUE}.
 #' @param call A character string specifying the call you intend to use to fit
 #'  the model. This will ensure the correct model defaults are specified. Options
 #'  currently include "lavaan", "sem", or "cfa". If a parameter table for fit
-#'  object are supplied, this argument is ignored.
+#'  object are supplied, this argument is ignored. Default: "sem".
+#' @param twostep A logical indicating whether to use the two-step identification rule
+#' instead of the usual one-step. See details. Default: \code{FALSE}.
 #' @param ... Additional arguments passed to the \code{lavaanify} function from
 #'  \code{lavaan}. See \link[lavaan]{lavaanify} for more information. If parameter
 #'  tables or fitted model objects are supplied, these arguments are ignored.
 #'
-#' @return An object of class \code{semid}.
+#' @return An object of class \code{semid} or \code{semid2} (if \code{twostep = TRUE}
+#' or \code{id2} is called. See details.)
 #'
 #' @examples
 #' # Holzinger and Swineford (1939) example
@@ -50,7 +59,7 @@
 #' 
 #' @name id
 #' @export
-id <- function(x, include.msgs = TRUE, call = "sem", ...) {
+id <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
   stopifnot(
     "Argument `include.msgs` must be a logical" =
       is.logical(include.msgs)
@@ -59,19 +68,23 @@ id <- function(x, include.msgs = TRUE, call = "sem", ...) {
     "Unknown `call` or `call` currently not supported" =
       call %in% c("lavaan", "sem", "cfa")
   )
+  stopifnot(
+    "Argument `twostep` must be a logical" =
+      is.logical(include.msgs)
+  )
   UseMethod("id")
 }
 
 #' @rdname id
 #' @export
-id.semscale <- function(x, include.msgs = TRUE, call = "sem", ...) {
+id.semscale <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
   print(x)
-  return(id.data.frame(x$partable, include.msgs = include.msgs, call = call, ...))
+  return(id.data.frame(x$partable, include.msgs = include.msgs, call = call, twostep = twostep, ...))
 }
 
 #' @rdname id
 #' @export
-id.lavaan <- function(x, include.msgs = TRUE, call = "sem", ...) {
+id.lavaan <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
   dotdotdot <- list(...)
   if (length(dotdotdot) > 0) {
     warning("Additional arguments are ignored when a fitted lavaan object is supplied")
@@ -80,12 +93,12 @@ id.lavaan <- function(x, include.msgs = TRUE, call = "sem", ...) {
     x@ParTable,
     stringsAsFactors = FALSE
   )
-  return(id.data.frame(partable, include.msgs = include.msgs, call = call, ...))
+  return(id.data.frame(partable, include.msgs = include.msgs, call = call, twostep = twostep, ...))
 }
 
 #' @rdname id
 #' @export
-id.character <- function(x, include.msgs = TRUE, call = "sem", ...) {
+id.character <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
   dotdotdot <- list(...)
   if (isTRUE(dotdotdot$model.type == "efa")) {
     dotdotdot[["model.type"]] <- NULL
@@ -108,16 +121,36 @@ id.character <- function(x, include.msgs = TRUE, call = "sem", ...) {
     dotdotdot
   )
   partable <- do.call(lavaan::lavaanify, args)
-  return(id.data.frame(partable, include.msgs = include.msgs, call = call, ...))
+  return(id.data.frame(partable, include.msgs = include.msgs, call = call, twostep = twostep, ...))
 }
 
 #' @rdname id
 #' @export
-id.data.frame <- function(x, include.msgs = TRUE, call = "sem", ...) {
+id.data.frame <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
   if (is.list(x) && !is.null(x$lhs) && is.null(x$mod.idx)) {
     partable <- x
   } else {
     stop("Unknown list format. Please supply a lavaan parameter table or fitted model object.")
+  }
+
+  if (twostep) {
+    partable.cfa <- sem_to_cfa(partable)
+    partable.reg <- sem_to_reg(partable)
+
+    out <- list(
+      id.cfa = id(partable.cfa),
+      id.reg = id(partable.reg),
+      partable = partable,
+      print.options = list(
+        include.msgs = include.msgs
+      )
+    )
+
+    # alternate class for two-step id
+    class(out) <- "semid2"
+
+    return(out)
+
   }
 
   # STEP 1 - Classify model
@@ -156,4 +189,10 @@ id.data.frame <- function(x, include.msgs = TRUE, call = "sem", ...) {
 #' @export
 id.default <- function(x, include.msgs = TRUE, call = "sem", ...) {
   stop("Unknown model format. Please supply a model string, lavaan parameter table, or fitted model object.")
+}
+
+#' @rdname id
+#' @export
+id2 <- function(x, include.msgs = TRUE, call = "sem", ...) {
+  id(x, include.msgs = include.msgs, call = call, twostep = TRUE, ...)
 }

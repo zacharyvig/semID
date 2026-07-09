@@ -36,6 +36,31 @@ check_recursion <- function(partable, x) {
   
 }
 
+#' Convert a SEM into a Confirmatory Factor Analysis for the two-step rule
+#' @param partable A lavaan parameter table
+#' @noRd
+sem_to_cfa <- function(partable) {
+  vars <- get_partable_vars(partable, c("lv"))
+  lv.regs <- with(partable, op == "~" & lhs %in% vars$lv & rhs %in% vars$lv)
+  # replace directional arrows with double-sided ones
+  partable$op[lv.regs] <- "~~"
+  return(partable)
+}
+
+#' Convert a SEM into a Simultaneous Equations Model for the two-step rule
+#' @param partable A lavaan parameter table
+#' @noRd
+sem_to_reg <- function(partable) {
+  vars <- get_partable_vars(partable, c("lv"))
+  lv.paths <- with(partable, lhs %in% vars$lv & rhs %in% vars$lv)
+  partable <- partable[lv.paths, ]
+  # handle higher order factors
+  partable$op[partable$op == "=~"] <- "~"
+  # handle causal indicators
+  partable$op[partable$op == "<~"] <- "~"
+  return(partable)
+}
+
 #' Gather identification rules as a list
 #'
 #' The `semID` package stores identification rule functions internally. This

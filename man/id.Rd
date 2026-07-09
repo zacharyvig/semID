@@ -7,38 +7,46 @@
 \alias{id.character}
 \alias{id.data.frame}
 \alias{id.default}
+\alias{id2}
 \title{Evaluate common Structural Equation Model (SEM) identification rules}
 \usage{
-id(x, include.msgs = TRUE, call = "sem", ...)
+id(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...)
 
-\method{id}{semscale}(x, include.msgs = TRUE, call = "sem", ...)
+\method{id}{semscale}(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...)
 
-\method{id}{lavaan}(x, include.msgs = TRUE, call = "sem", ...)
+\method{id}{lavaan}(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...)
 
-\method{id}{character}(x, include.msgs = TRUE, call = "sem", ...)
+\method{id}{character}(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...)
 
-\method{id}{data.frame}(x, include.msgs = TRUE, call = "sem", ...)
+\method{id}{data.frame}(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...)
 
 \method{id}{default}(x, include.msgs = TRUE, call = "sem", ...)
+
+id2(x, include.msgs = TRUE, call = "sem", ...)
 }
 \arguments{
 \item{x}{A character string model in \code{lavaan} syntax, a
 \code{lavaan} parameter table, or a fitted \code{lavaan} object.}
 
 \item{include.msgs}{Logical. If \code{TRUE}, the output will include why a rule 
-does not pass or is not applicable, along with any other helpful information.}
+does not pass or is not applicable, along with any other helpful information.
+Default: \code{TRUE}.}
 
 \item{call}{A character string specifying the call you intend to use to fit
 the model. This will ensure the correct model defaults are specified. Options
 currently include "lavaan", "sem", or "cfa". If a parameter table for fit
-object are supplied, this argument is ignored.}
+object are supplied, this argument is ignored. Default: "sem".}
+
+\item{twostep}{A logical indicating whether to use the two-step identification rule
+instead of the usual one-step. See details. Default: \code{FALSE}.}
 
 \item{...}{Additional arguments passed to the \code{lavaanify} function from
 \code{lavaan}. See \link[lavaan]{lavaanify} for more information. If parameter
 tables or fitted model objects are supplied, these arguments are ignored.}
 }
 \value{
-An object of class \code{semid}.
+An object of class \code{semid} or \code{semid2} (if \code{twostep = TRUE}
+or \code{id2} is called. See details.)
 }
 \description{
 This is the "workhorse" function of the \code{semID} package. The user supplies
@@ -67,6 +75,11 @@ in the "Warning" column of the table.
 be used) when fitting the model in the case a model string is supplied. Supplying
 a parameter table or fitted model object ignores the \code{call} argument since
 defaults will have already been implemented.
+
+\code{id2} is a wrapper function for calling \code{id} with argument \code{twostep}
+set to \code{TRUE}. The two-step method parses an SEM into a CFA model and a latent
+variable/structural model, and evaluates the identification rules on each. If both
+parts are identified, the whole model is identified.
 }
 \examples{
 # Holzinger and Swineford (1939) example

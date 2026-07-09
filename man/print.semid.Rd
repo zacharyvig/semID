@@ -15,11 +15,12 @@
   window = 56L,
   pos.lab = "Yes",
   neg.lab = "No",
-  na.lab = "-"
+  na.lab = "-",
+  print.version = TRUE
 )
 }
 \arguments{
-\item{x}{A \code{lavid} object, i.e., a list of rule output objects.}
+\item{x}{A \code{semid} object}
 
 \item{...}{Not currently used.}
 
@@ -41,6 +42,9 @@ e.g., "1" = "Info", "2" = "Reason", "3" = "WARNING".}
 \item{neg.lab}{Character. The label for negative cells, e.g., "No".}
 
 \item{na.lab}{Character. The label for NA/blank cells.}
+
+\item{print.version}{Logical. If \code{TRUE}, the version of the package is
+printed in a header before the rules output.}
 }
 \description{
 Printing function for rules list

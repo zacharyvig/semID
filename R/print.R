@@ -1,6 +1,6 @@
 #' Printing function for rules list
 #'
-#' @param x A \code{lavid} object, i.e., a list of rule output objects.
+#' @param x A \code{semid} object
 #' @param names Character vector. The names of the columns of the main table
 #' @param include.msgs Logical. If \code{TRUE} messages are printed
 #' @param msgs.name Character. The name of the messages index column
@@ -11,13 +11,16 @@
 #' @param pos.lab Character. The label for positive cells, e.g., "Yes".
 #' @param neg.lab Character. The label for negative cells, e.g., "No".
 #' @param na.lab Character. The label for NA/blank cells.
+#' @param print.version Logical. If \code{TRUE}, the version of the package is
+#'        printed in a header before the rules output.
 #' @param ... Not currently used.
 #'
 #' @export
 print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient"),
                         include.msgs = TRUE, msgs.name = "Message", msgs.sec = "Messages",
                         msgs.levels = c("1" = "Info", "2" = "Reason", "3" = "WARNING"),
-                        window = 56L, pos.lab = "Yes", neg.lab = "No", na.lab = "-") {
+                        window = 56L, pos.lab = "Yes", neg.lab = "No", na.lab = "-",
+                        print.version = TRUE) {
   if (!is.null(x$print.options$include.msgs)) {
     if (x$print.options$include.msgs != include.msgs) {
       warning("The `include.msgs` argument in the print method is overriding the `include.msgs` argument in the semid object.")
@@ -33,8 +36,10 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
   names[1] <- format(names[1], width = window - cols_width)
   midx <- 0L # global message index
 
-  version <- utils::packageVersion("semID")
-  cat(sprintf("semID %s Rule Check\n\n", version))
+  if (print.version) {
+    version <- utils::packageVersion("semID")
+    cat(sprintf("semID %s Rule Check\n\n", version))
+  }
 
   cat(names, strrep("\n", 1L))
 
@@ -102,6 +107,36 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
   }
 
   cat("\n")
+
+  return(invisible(x))
+
+}
+
+
+#' Printing function for two-step rules lists
+#' 
+#' @param x A \code{semid2} object
+#' @param ... Arguments to be passed to print.semid.
+#' @param step.titles Character. The labels to be given to each step.
+#' @param step.names Character. The names of each step/block.
+#' @param div Character. The divider to be used before each step/block.
+#' 
+#' @export
+print.semid2 <- function(x, ..., step.names = c("Measurement Model", "Latent Variable/Structural Model"),
+                         step.titles = c("STEP 1", "STEP 2"), div = strrep("-", 56L)) {
+
+  version <- utils::packageVersion("semID")
+  cat(sprintf("semID %s Two-Step Rule Check\n\n", version))
+
+  cat(div, "\n")
+
+  cat(paste(step.titles[1], "-", step.names[1], "\n"))
+  print(x$id.cfa, print.version = FALSE, ...)
+
+  cat(div, "\n")
+
+  cat(paste(step.titles[2], "-", step.names[2], "\n"))
+  print(x$id.reg, print.version = FALSE, ...)
 
   return(invisible(x))
 
