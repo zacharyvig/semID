@@ -8,8 +8,7 @@
   x,
   ...,
   step.names = c("Measurement Model", "Latent Variable/Structural Model"),
-  step.titles = c("STEP 1", "STEP 2"),
-  div = strrep("-", 56L)
+  step.titles = c("Step 1", "Step 2")
 )
 }
 \arguments{
@@ -20,8 +19,6 @@
 \item{step.names}{Character. The names of each step/block.}
 
 \item{step.titles}{Character. The labels to be given to each step.}
-
-\item{div}{Character. The divider to be used before each step/block.}
 }
 \description{
 Printing function for two-step rules lists

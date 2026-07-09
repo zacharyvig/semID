@@ -7,6 +7,7 @@
 \alias{scaling.character}
 \alias{scaling.data.frame}
 \alias{scaling.default}
+\alias{scaling.semid2}
 \title{Check if latent variables are correctly scaled}
 \usage{
 scaling(
@@ -60,6 +61,15 @@ scaling(
   include.msgs = TRUE,
   lv = NULL,
   return.type = c("table", "logical"),
+  ...
+)
+
+\method{scaling}{semid2}(
+  x,
+  call = "sem",
+  include.msgs = TRUE,
+  lv = NULL,
+  return.type = c("object", "logical"),
   ...
 )
 }

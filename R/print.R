@@ -119,23 +119,18 @@ print.semid <- function(x, ..., names = c("", "Pass", "Necessary", "Sufficient")
 #' @param ... Arguments to be passed to print.semid.
 #' @param step.titles Character. The labels to be given to each step.
 #' @param step.names Character. The names of each step/block.
-#' @param div Character. The divider to be used before each step/block.
 #' 
 #' @export
 print.semid2 <- function(x, ..., step.names = c("Measurement Model", "Latent Variable/Structural Model"),
-                         step.titles = c("STEP 1", "STEP 2"), div = strrep("-", 56L)) {
+                         step.titles = c("Step 1", "Step 2")) {
 
   version <- utils::packageVersion("semID")
   cat(sprintf("semID %s Two-Step Rule Check\n\n", version))
 
-  cat(div, "\n")
-
-  cat(paste(step.titles[1], "-", step.names[1], "\n"))
+  cat(paste0(step.titles[1], ": ", step.names[1], "\n\n"))
   print(x$id.cfa, print.version = FALSE, ...)
 
-  cat(div, "\n")
-
-  cat(paste(step.titles[2], "-", step.names[2], "\n"))
+  cat(paste0(step.titles[2], ": ", step.names[2], "\n\n"))
   print(x$id.reg, print.version = FALSE, ...)
 
   return(invisible(x))
