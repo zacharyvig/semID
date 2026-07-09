@@ -20,19 +20,29 @@ rule_sem_exogenous_x(partable)
 \item{partable}{A \code{lavaan} parameter table}
 }
 \description{
-Rules for all structural equation models
+Structural Equation Modles (SEM) refer to the general class of models consisting
+of structural/directional relations, latent variables, or both.
+}
+\details{
+\itemize{
+ \item{N_theta Rule}{The number of free parameters must be less than or equal to
+ the number of sample means, variances, and covariances. Necessary but not sufficient}
+ \item{Latent Scaling Rule}{In a model with latent variables, all latent variables
+ must be correctly scaled (see \link[semID]{scaling}). Necessary but not sufficient.}
+ \item{Two Emitted Paths Rule}{In a model with latent variables, all latent variables
+ must emit two paths, either to other latent variables or to observed variables. This
+ rule only applies to latent variables that have free variances and whose downstream
+ variables have free error/disturbance variance. Necessary but not sufficient.}
+ \item{Exogenous X Rule/MIMIC Rules}{These rules apply to models in which one or more
+ latent variables have a causal indicator, in addition to effect indicators. In such
+ a model with a single latent variable, there only need to be one (or more) causal
+ indicators as long as there are at least two effect indicators. In a model with multiple
+ latent variables, ...}
+}
 }
 \references{
-Bollen (2026). Elements of Structural Equation Models (SEMs).
-
 Bollen, K. A., Lilly, A. G., & Luo, L. (2024). Selecting scaling
 indicators in structural equation models (SEMs).
-
-Bollen (2026). Elements of Structural Equation Models (SEMs).
-
-Bollen (2026). Elements of Structural Equation Models (SEMs).
-
-Bollen & Davis (2009). Two Rules of Identification for Structural Equation Models.
 
 Bollen (2026). Elements of Structural Equation Models (SEMs).
 

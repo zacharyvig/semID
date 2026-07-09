@@ -1,14 +1,33 @@
-#' @title Rules for confirmatory factor analysis models
+#' Rules for confirmatory factor analysis models
+#' 
+#' Confirmatory Factor Analysis (CFA) models are models with latent variables
+#' but no structural paths between latent variables. CFA rules assume each 
+#' latent variable is correctly scaled (see \link[semID]{scaling}).
+#' 
+#' \itemize{
+#'  \item{Two Indicator Rule}{In a model with more than one latent variable, each
+#'  latent variable can have just two indicators if each indicator loads on exactly
+#'  one variable, none of the errors of the indicators are correlated, and each
+#'  latent variable correlates with at least one other latent variable. Sufficient
+#'  but not necessary.}
+#'  \item{Three Indicator Rule}{In a model with one or more latent variables, each
+#'  latent variable can have just three indicators if each indicator loads on exactly
+#'  one variable and none of the errors of the indicators are correlated. Sufficient
+#'  but not necessary.}
+#' }
+#' 
 #' @name cfa_rules
+#' @param partable A \code{lavaan} parameter table
+#'
+#' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
+#' @references Kenny, D. A. (1979). Correlation and causality.
+#' 
 #' @keywords internal
 NULL
 
 
 # Three indicator rules
 #' @rdname cfa_rules
-#' @param partable A \code{lavaan} parameter table
-#'
-#' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
 #' @keywords internal
 rule_cfa_three_indicator <- function(partable) {
   rule <- "Three Indicator Rule"
@@ -105,11 +124,6 @@ rule_cfa_three_indicator <- function(partable) {
 
 # Two indicator rules
 #' @rdname cfa_rules
-#' @param partable A \code{lavaan} parameter table
-#'
-#' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
-#' @references Kenny, D. A. (1979). Correlation and causality.
-#'
 #' @keywords internal
 rule_cfa_two_indicator <- function(partable) {
   rule <- "Two Indicator Rule"
@@ -175,7 +189,7 @@ rule_cfa_two_indicator <- function(partable) {
   cor_err.ind <- sapply(ind.fof, function(ind) {
     with(covs, any(lhs == ind & rhs %in% ind.fof | rhs == ind & lhs %in% ind.fof))
   }, simplify = TRUE)
-  # lv variances/correlations
+  # lv variances/correlations -- each lv is correlated with at least one other lv
   cor.lv <- sapply(vars$lv[idx.fof], function(var) {
     with(covs, any(lhs == var & rhs %in% vars$lv | rhs == var & lhs %in% vars$lv))
   }, simplify = TRUE)

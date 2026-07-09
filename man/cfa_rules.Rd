@@ -14,11 +14,24 @@ rule_cfa_two_indicator(partable)
 \item{partable}{A \code{lavaan} parameter table}
 }
 \description{
-Rules for confirmatory factor analysis models
+Confirmatory Factor Analysis (CFA) models are models with latent variables
+but no structural paths between latent variables. CFA rules assume each 
+latent variable is correctly scaled (see \link[semID]{scaling}).
+}
+\details{
+\itemize{
+ \item{Two Indicator Rule}{In a model with more than one latent variable, each
+ latent variable can have just two indicators if each indicator loads on exactly
+ one variable, none of the errors of the indicators are correlated, and each
+ latent variable correlates with at least one other latent variable. Sufficient
+ but not necessary.}
+ \item{Three Indicator Rule}{In a model with one or more latent variables, each
+ latent variable can have just three indicators if each indicator loads on exactly
+ one variable and none of the errors of the indicators are correlated. Sufficient
+ but not necessary.}
+}
 }
 \references{
-Bollen (2026). Elements of Structural Equation Models (SEMs).
-
 Bollen (2026). Elements of Structural Equation Models (SEMs).
 
 Kenny, D. A. (1979). Correlation and causality.

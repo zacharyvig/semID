@@ -1,14 +1,34 @@
-#' Rules for simultaneous equation/regression models
+#' Rules for simultaneous equations/regression models
+#' 
+#' Simultaneous equations models are structural models without any latent
+#' variables. Regression models are a subset of these models with a single
+#' outcome, while the general simultaneous equations model can accomodate
+#' multiple outcomes
+#' 
+#' \itemize{
+#'  \item{Null B_YY Rule}{No endogenous variable is the predictor of another
+#'  endogenous variable. Sufficient but not necessary.}
+#'  \item{Fully Recursive Model Rule}{The model has no feedback loops (i.e.,
+#'  is recursive) and there are no correlated errors ("fully" recursive).
+#'  Sufficient but not necessary.}
+#'  \item{Recursive with Correlated Errors Rule}{The model has no feedback loops
+#'  (i.e., is recursive) but can have correlated errors as long as the errors are
+#'  not for terms between which exists a structural/directional path. Sufficient
+#'  but not necessary.}
+#' }
+#'
 #' @name reg_rules
+#' 
+#' @param partable A \code{lavaan} parameter table
+#' 
+#' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
+#' @references Brito, C., & Pearl, J. (2002). A new identification condition
+#' for recursive models with correlated errors.
 #' @keywords internal
 NULL
 
 # Null B_YY Rule
 #' @rdname reg_rules
-#' @param partable A \code{lavaan} parameter table
-#'
-#' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
-#'
 #' @keywords internal
 rule_reg_null_byy <- function(partable) {
   rule <- "Null B_YY Rule"
@@ -49,9 +69,6 @@ rule_reg_null_byy <- function(partable) {
 
 # Fully Recursive model rule
 #' @rdname reg_rules
-#' @param partable A \code{lavaan} parameter table
-#'
-#' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
 #' @keywords internal
 rule_reg_fully_recursive <- function(partable) {
   rule <- "Fully Recursive Rule"
@@ -104,12 +121,6 @@ rule_reg_fully_recursive <- function(partable) {
 
 # Recursive model with correlated errors rule
 #' @rdname reg_rules
-#' @param partable A \code{lavaan} parameter table
-#'
-#' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
-#' @references Brito, C., & Pearl, J. (2002). A new identification condition
-#' for recursive models with correlated errors.
-#'
 #' @keywords internal
 rule_reg_recursive_corr_err <- function(partable) {
   rule <- "Recur/Corr Err Rule"

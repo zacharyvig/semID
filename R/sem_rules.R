@@ -1,14 +1,37 @@
 #' Rules for all structural equation models
+#' 
+#' Structural Equation Modles (SEM) refer to the general class of models consisting
+#' of structural/directional relations, latent variables, or both.
+#' 
+#' \itemize{
+#'  \item{N_theta Rule}{The number of free parameters must be less than or equal to
+#'  the number of sample means, variances, and covariances. Necessary but not sufficient}
+#'  \item{Latent Scaling Rule}{In a model with latent variables, all latent variables
+#'  must be correctly scaled (see \link[semID]{scaling}). Necessary but not sufficient.}
+#'  \item{Two Emitted Paths Rule}{In a model with latent variables, all latent variables
+#'  must emit two paths, either to other latent variables or to observed variables. This
+#'  rule only applies to latent variables that have free variances and whose downstream
+#'  variables have free error/disturbance variance. Necessary but not sufficient.}
+#'  \item{Exogenous X Rule/MIMIC Rules}{These rules apply to models in which one or more
+#'  latent variables have a causal indicator, in addition to effect indicators. In such
+#'  a model with a single latent variable, there only need to be one (or more) causal
+#'  indicators as long as there are at least two effect indicators. In a model with multiple
+#'  latent variables, ...}
+#' }
+#' 
 #' @name sem_rules
+#' @param partable A \code{lavaan} parameter table
+#'
+#' @references Bollen, K. A., Lilly, A. G., & Luo, L. (2024). Selecting scaling
+#' indicators in structural equation models (SEMs).
+#' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
+#' @references Bollen & Davis (2009). Two Rules of Identification for Structural Equation Models.
 #' @keywords internal
 NULL
 
 
 # N_theta rule (compares parameters to observed statistics)
 #' @rdname sem_rules
-#' @param partable A \code{lavaan} parameter table
-#'
-#' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
 #' @keywords internal
 rule_sem_ntheta <- function(partable) {
   # number of parameters
@@ -37,11 +60,6 @@ rule_sem_ntheta <- function(partable) {
 
 # Latent Scaling rule
 #' @rdname sem_rules
-#' @param partable A \code{lavaan} parameter table
-#'
-#' @references Bollen, K. A., Lilly, A. G., & Luo, L. (2024). Selecting scaling
-#' indicators in structural equation models (SEMs).
-#' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
 #' @keywords internal
 rule_sem_latent_scaling <- function(partable) {
   rule <- "Latent Scaling Rule"
@@ -83,11 +101,6 @@ rule_sem_latent_scaling <- function(partable) {
 
 # 2+ Emitted Paths rule
 #' @rdname sem_rules
-#'
-#' @param partable A \code{lavaan} parameter table
-#'
-#' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
-#' @references Bollen & Davis (2009). Two Rules of Identification for Structural Equation Models.
 #' @keywords internal
 rule_sem_two_emitted_paths <- function(partable) {
   rule <- "2+ Emitted Paths Rule"
@@ -196,16 +209,11 @@ rule_sem_two_emitted_paths <- function(partable) {
 
 # Exogenous X rule/MIMIC rules
 #' @rdname sem_rules
-#'
-#' @param partable A \code{lavaan} parameter table
-#'
-#' @references Bollen (2026). Elements of Structural Equation Models (SEMs).
-#' @references Bollen & Davis (2009). Two Rules of Identification for Structural Equation Models.
 #' @keywords internal
 rule_sem_exogenous_x <- function(partable) {
   rule <- "Exogenous X Rule"
   # retrieve attributes and variable names
-  vars <- get_partable_vars(partable, c("lv", "ov"))
+  vars <- get_partable_vars(partable, c("lv", "ov.cind", "ov.ind"))
   if (length(vars$lv) == 0) {
     out <- build_rule_out(
       rule = rule,
@@ -219,14 +227,14 @@ rule_sem_exogenous_x <- function(partable) {
     return(out)
   }
   # build output
-  n.ind <- sapply(vars$lv, function (var) {
+  n.ind <- sapply(vars$lv, function(var) {
     sum(
-      with(partable, lhs == var & any(vars$ov %in% rhs) & op == "=~")
+      with(partable, lhs == var & rhs %in% vars$ov.ind)
     )
   }, simplify = TRUE)
-  n.cind <- sapply(vars$lv, function (var) {
+  n.cind <- sapply(vars$lv, function(var) {
     sum(
-      with(partable, lhs == var & any(vars$ov %in% rhs) & (op == "~" | op == "<~"))
+      with(partable, lhs == var & rhs %in% vars$ov.cind)
     )
   }, simplify = TRUE)
   if (all(n.cind == 0)) {
@@ -254,6 +262,12 @@ rule_sem_exogenous_x <- function(partable) {
     }
   } else {
     # TODO: finish multiple LV MIMIC rule
+    # find unique indicator for each lv
+    # uniq.ind <- sapply(vars$lv, function(var) {
+    #   inds <- with(partable, rhs[lhs == var & rhs %in% vars$ov.ind])
+    #   idx <- sapply(inds, function(ind) any(with(partable, lhs != var & rhs == ind & op == "=~")))
+    #   if (!any(idx)) { NA } else { ind[min(which(idx))] }
+    # }, simplify = TRUE)
     pass <- NA
     cond <- NA_character_
     msgs <- add_rule_msgs(
