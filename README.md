@@ -8,7 +8,7 @@
 [![R-CMD-check](https://github.com/zacharyvig/semID/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/zacharyvig/semID/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-semID allows the user to input a Structural Equation Model (SEM) in
+`semID` allows the user to input a Structural Equation Model (SEM) in
 [`lavaan`](https://lavaan.ugent.be/) (Rosseel, 2012) syntax and check it
 against a number of identification rules from the literature. Rules are
 specified as being necessary and/or sufficient and specific reasons are
@@ -27,19 +27,52 @@ You can install the development version of semID from
 # devtools::install_github("zacharyvig/semID")
 ```
 
+## Functions
+
+- `id()` takes a `lavaan` model string, parameter table, or model fit
+  and evaluates the identification rules with informative output. The
+  `call` argument is used to specify which `lavaan` function with which
+  you intend to fit a model (e.g., “sem”). Output includes whether the
+  rule passed, whether the rule is necessary and/or sufficient for
+  identification, and, if `include.msgs = TRUE`, information about why a
+  rule did/did not pass or if a rule is relevant for the particular type
+  of model. Messages are classified as “Info” (information about, e.g.,
+  why a rule is not relevant), “Reason” (explanation of why a rule did
+  not pass, but the rule was not necessary for identification), or
+  “WARNING” (explanation of why a necessary rule failed).
+
+- `scaling()` prints output about how/why/why not latent variables in
+  the model are scaled. It relays which indicator is the scaling
+  indicator (if applicalbe) and reasons why the latent variable is/is
+  not scaled.
+
+- `id2()` evaluates the two-step rule of identification for full SEMs
+  only. This rule first converts the model into a confirmatory factor
+  analysis model by changing structural relationships to covariances,
+  evaluates the identification of the CFA, if identified, then converts
+  the original model into a simultaneous equations model (treating
+  latent variables as observed), evalutes the identification of the
+  SimEM, and, if identified, confirms that the original model is
+  identified. See Bollen’s ‘Elements of Structural Equation
+  Models’ (2026) for details.
+
+- Note that the package supports piping for comprehensive printing,
+  e.g., `id(my_model) |> scaling()`.
+
 ## Example
 
 ``` r
 library(semID)
-#> semID 0.3.2 is still in the development phase
+#> semID 0.4.0 is still in the development phase
 
 # Holzinger and Swineford (1939) example
 HS.model <- ' visual  =~ x1 + x2 + x3
               textual =~ x4 + x5 + x6
               speed   =~ x7 + x8 + x9 '
+
 id(HS.model, include.msgs = TRUE, call = "cfa", 
    meanstructure = FALSE) # check identification rules
-#> semID 0.3.2 Rule Check
+#> semID 0.4.0 Rule Check
 #> 
 #>                        Pass Necessary Sufficient Message 
 #> N_theta Rule            Yes       Yes         No 
@@ -57,9 +90,10 @@ id(HS.model, include.msgs = TRUE, call = "cfa",
 #>     indicators are in the model
 #> 2 - [Info] This rule only applies when there are no
 #>     latent variables in the model
+
 scaling(HS.model, include.msgs = TRUE, call = "cfa", 
         meanstructure = FALSE) # check latent variable scaling
-#> semID 0.3.2 Latent Variable Scaling
+#> semID 0.4.0 Latent Variable Scaling
 #> 
 #> visual
 #>   LV is scaled: Yes
