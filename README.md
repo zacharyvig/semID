@@ -9,7 +9,7 @@
 <!-- badges: end -->
 
 semID allows the user to input a Structural Equation Model (SEM) in
-[`lavaan`](https://lavaan.ugent.be/) (Roseel, 2012) syntax and check it
+[`lavaan`](https://lavaan.ugent.be/) (Rosseel, 2012) syntax and check it
 against a number of identification rules from the literature. Rules are
 specified as being necessary and/or sufficient and specific reasons are
 given when a rule is broken. Caution is given to the user in using the
@@ -42,21 +42,21 @@ id(HS.model, include.msgs = TRUE, call = "cfa",
 #> semID 0.3.2 Rule Check
 #> 
 #>                        Pass Necessary Sufficient Message 
+#> N_theta Rule            Yes       Yes         No 
+#> Latent Scaling Rule     Yes       Yes         No 
+#> Exogenous X Rule          -         -          -       1 
+#> 2+ Emitted Paths Rule   Yes       Yes         No 
 #> Three Indicator Rule    Yes        No        Yes 
 #> Two Indicator Rule      Yes        No        Yes 
-#> Fully Recursive Rule      -         -          -       1 
-#> Null B_YY Rule            -         -          -       1 
-#> Recur/Corr Err Rule       -         -          -       1 
-#> Exogenous X Rule          -         -          -       2 
-#> Latent Scaling Rule     Yes       Yes         No 
-#> N_theta Rule            Yes       Yes         No 
-#> 2+ Emitted Paths Rule   Yes       Yes         No 
+#> Fully Recursive Rule      -         -          -       2 
+#> Null B_YY Rule            -         -          -       2 
+#> Recur/Corr Err Rule       -         -          -       2 
 #> ---
 #> Messages
-#> 1 - [Info] This rule only applies when there are no
-#>     latent variables in the model
-#> 2 - [Info] This rule only applies when causal
+#> 1 - [Info] This rule only applies when causal
 #>     indicators are in the model
+#> 2 - [Info] This rule only applies when there are no
+#>     latent variables in the model
 scaling(HS.model, include.msgs = TRUE, call = "cfa", 
         meanstructure = FALSE) # check latent variable scaling
 #> semID 0.3.2 Latent Variable Scaling
@@ -69,6 +69,7 @@ scaling(HS.model, include.msgs = TRUE, call = "cfa",
 #>   Scaling method(s):
 #>   - Scaling indicator with fixed mean
 #> 
+#> 
 #> textual
 #>   LV is scaled: Yes
 #>   No. of indicators: 3
@@ -76,6 +77,7 @@ scaling(HS.model, include.msgs = TRUE, call = "cfa",
 #> 
 #>   Scaling method(s):
 #>   - Scaling indicator with fixed mean
+#> 
 #> 
 #> speed
 #>   LV is scaled: Yes
