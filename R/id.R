@@ -165,16 +165,14 @@ id.data.frame <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE,
   # STEP 2 - Evaluate rules
   rule_names <- get_rule_names("all")
   # preferred order is to start with ntheta and all sem rules
+  ntheta_rule <- grep("ntheta", rule_names, value = TRUE)
+  scaling_rule <- grep("scaling", rule_names, value = TRUE)
+  sem_rules <- grep("_sem", rule_names, value = TRUE)
   rule_names_ord <- c(
-    grep("ntheta", rule_names, value = TRUE),
-    grep("scaling", rule_names, value = TRUE),
-    setdiff(
-      grep("_sem", rule_names, value = TRUE),
-      c(grep("ntheta", rule_names, value = TRUE),
-        grep("scaling", rule_names, value = TRUE)
-      )
-    ),
-    grep("_sem", rule_names, value = TRUE, invert = TRUE)
+    ntheta_rule,
+    scaling_rule,
+    setdiff(sem_rules, c(ntheta_rule, scaling_rule)),
+    setdiff(rule_names, sem_rules)
   )
   # apply rules to partable
   rules <- c(

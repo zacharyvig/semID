@@ -46,6 +46,14 @@ test_models <- list(
         sem_n_theta_fail = list(
                 type = "sem",
                 model = "L1 =~ NA*Y1 + NA*Y2\nL2 =~ NA*Y4 + NA*Y5\nL1 ~ L2\nL1 ~~ L1\nL2 ~~ L2"
+        ),
+        mlm = list(
+                type = "sem",
+                model = "level: 1\nY1 ~ X1 + X2\nlevel: 2\nY2 ~ Y1 + X3"
+        ),
+        categorical = list(
+                type = "sem",
+                model = "y1 | t1 + t2\ny2 | t3 + t4\ny1 ~*~ y1\ny2 ~*~ y2"
         )
 )
 

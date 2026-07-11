@@ -22,8 +22,12 @@ test_that("classify_model identifies reg, cfa, sem, and mlm parts", {
     classify_model(make_partable(test_models$sem_scaling_pass)),
     "sem"
   )
-  expect_identical(
-    classify_model(lavaan::lavaanify("level: 1\n  y ~ x\nlevel: 2\n y ~ x")),
-    "mlm"
+  expect_error(
+    classify_model(make_partable(test_models$mlm)),
+    "This model type is not currently supported"
+  )
+  expect_error(
+    classify_model(make_partable(test_models$categorical)),
+    "This model type is not currently supported"
   )
 })
