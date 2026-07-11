@@ -133,7 +133,21 @@ id.data.frame <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE,
     stop("Unknown list format. Please supply a lavaan parameter table or fitted model object.")
   }
 
+  # STEP 1 - Classify model
+  model.type <- classify_model(partable)
+  if (is.na(model.type) | model.type == "mlm") {
+    stop("This model type is not currently supported")
+  }
+  if (call == "cfa" && model.type != "cfa") {
+      warning("`sem()` or `lavaan()` may be more appropirate calls for this type of model")
+  }
+
   if (twostep) {
+
+    if (model.type != "sem") {
+      stop("The two-step identification rule is only applicable to full SEMs.")
+    }
+
     partable.cfa <- sem_to_cfa(partable)
     partable.reg <- sem_to_reg(partable)
 
@@ -151,15 +165,6 @@ id.data.frame <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE,
 
     return(out)
 
-  }
-
-  # STEP 1 - Classify model
-  model.type <- classify_model(partable)
-  if (is.na(model.type) | model.type == "mlm") {
-    stop("This model type is not currently supported")
-  }
-  if (call == "cfa" && model.type != "cfa") {
-      warning("`sem()` or `lavaan()` may be more appropirate calls for this type of model")
   }
 
   # STEP 2 - Evaluate rules
