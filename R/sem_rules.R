@@ -261,13 +261,8 @@ rule_sem_exogenous_x <- function(partable) {
       )
     }
   } else {
-    # TODO: finish multiple LV MIMIC rule
-    # find unique indicator for each lv
-    # uniq.ind <- sapply(vars$lv, function(var) {
-    #   inds <- with(partable, rhs[lhs == var & rhs %in% vars$ov.ind])
-    #   idx <- sapply(inds, function(ind) any(with(partable, lhs != var & rhs == ind & op == "=~")))
-    #   if (!any(idx)) { NA } else { ind[min(which(idx))] }
-    # }, simplify = TRUE)
+    # most likely won't implement multiple latent variable case because it requires
+    # checking if the structural model among latent variables is identified
     pass <- NA
     cond <- NA_character_
     msgs <- add_rule_msgs(

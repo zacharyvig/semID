@@ -6,8 +6,8 @@ classify_model <- function(partable = NULL) {
   lavpta <- lavaan::lav_partable_attributes(partable)
   vnames <- lavpta$vnames
   # check for MLM
-  if (lavpta$nblocks > 1) {
-    return("mlm")
+  if (lavpta$nblocks > 1 | "~*~" %in% partable$op | "|" %in% partable$op) {
+    stop("This model type is not currently supported")
   }
   # tally variables
   nlv <- lapply(vnames$lv, length) # latent vars

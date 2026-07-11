@@ -44,6 +44,10 @@ sem_to_cfa <- function(partable) {
   lv.regs <- with(partable, op == "~" & lhs %in% vars$lv & rhs %in% vars$lv)
   # replace directional arrows with double-sided ones
   partable$op[lv.regs] <- "~~"
+  type <- classify_model(partable)
+  if (type != "cfa") {
+    stop("`sem_to_cfa()` failed. This is an internal error. Please report this issue to the package maintainer.")
+  }
   return(partable)
 }
 
@@ -55,9 +59,20 @@ sem_to_reg <- function(partable) {
   lv.paths <- with(partable, lhs %in% vars$lv & rhs %in% vars$lv)
   partable <- partable[lv.paths, ]
   # handle higher order factors
-  partable$op[partable$op == "=~"] <- "~"
+  hof <- which(partable$op == "=~")
+  # switch lhs and rhs
+  lhs <- partable$rhs[hof]
+  rhs <- partable$lhs[hof]
+  partable$lhs[hof] <- lhs
+  partable$rhs[hof] <- rhs
+  # then change the operator to "~"
+  partable$op[hof] <- "~"
   # handle causal indicators
   partable$op[partable$op == "<~"] <- "~"
+  type <- classify_model(partable)
+  if (type != "reg") {
+    stop("`sem_to_reg()` failed. This is an internal error. Please report this issue to the package maintainer.")
+  }
   return(partable)
 }
 
