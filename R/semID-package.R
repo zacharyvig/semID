@@ -4,13 +4,13 @@
 #'
 #' @section Purpose:
 #' semID allows the user to input a Structural Equation Model (SEM) in [`lavaan`](https://lavaan.ugent.be/)
-#' (Roseel, 2012) syntax and check it against a number of identification rules from the literature. Rules
+#' (Rosseel, 2012) syntax and check it against a number of identification rules from the literature. Rules
 #' are specified as being necessary and/or sufficient and specific reasons are given when a rule is broken.
 #' Caution is given to the user in using the output of the package as the sole determinant of model identification
 #' -- instead, it should be used as a "quick check" for any outstanding issues with the model.
 #'
 #' @section Main functions:
-#' The `id()` function is the work horse function of the package which evaluates a user-supplied model against
+#' The `id()` function is the workhorse function of the package which evaluates a user-supplied model against
 #' a number of identification rules. Calling the function in-line on a model string will print a table to the console
 #' with the results of the rule checks. Assigning the output of `id()` to an object will save the results and can be
 #' printed later.

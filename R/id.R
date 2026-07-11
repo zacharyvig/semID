@@ -70,7 +70,7 @@ id <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
   )
   stopifnot(
     "Argument `twostep` must be a logical" =
-      is.logical(include.msgs)
+      is.logical(twostep)
   )
   UseMethod("id")
 }
@@ -139,7 +139,7 @@ id.data.frame <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE,
     stop("This model type is not currently supported")
   }
   if (call == "cfa" && model.type != "cfa") {
-      warning("`sem()` or `lavaan()` may be more appropirate calls for this type of model")
+      warning("`sem()` or `lavaan()` may be more appropriate calls for this type of model")
   }
 
   if (twostep) {
