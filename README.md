@@ -23,8 +23,8 @@ You can install the development version of semID from
 [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-# devtools::install_github("zacharyvig/semID")
+# install.packages("pak")
+# pak::pak("zacharyvig/semID")
 ```
 
 ## Functions
