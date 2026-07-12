@@ -23,7 +23,7 @@ outcome, while the general simultaneous equations model can accomodate
 multiple outcomes
 }
 \details{
-\itemize{
+\describe{
  \item{Null B_YY Rule}{No endogenous variable is the predictor of another
  endogenous variable. Sufficient but not necessary.}
  \item{Fully Recursive Model Rule}{The model has no feedback loops (i.e.,

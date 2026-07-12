@@ -2,12 +2,7 @@
 % Please edit documentation in R/scaling.R
 \name{scaling}
 \alias{scaling}
-\alias{scaling.semid}
 \alias{scaling.lavaan}
-\alias{scaling.character}
-\alias{scaling.data.frame}
-\alias{scaling.default}
-\alias{scaling.semid2}
 \title{Check if latent variables are correctly scaled}
 \usage{
 scaling(
@@ -19,52 +14,7 @@ scaling(
   ...
 )
 
-\method{scaling}{semid}(
-  x,
-  call = "sem",
-  include.msgs = TRUE,
-  lv = NULL,
-  return.type = c("object", "logical"),
-  ...
-)
-
 \method{scaling}{lavaan}(
-  x,
-  call = "sem",
-  include.msgs = TRUE,
-  lv = NULL,
-  return.type = c("object", "logical"),
-  ...
-)
-
-\method{scaling}{character}(
-  x,
-  call = "sem",
-  include.msgs = TRUE,
-  lv = NULL,
-  return.type = c("object", "logical"),
-  ...
-)
-
-\method{scaling}{data.frame}(
-  x,
-  call = "sem",
-  include.msgs = TRUE,
-  lv = NULL,
-  return.type = c("object", "logical"),
-  ...
-)
-
-\method{scaling}{default}(
-  x,
-  call = "sem",
-  include.msgs = TRUE,
-  lv = NULL,
-  return.type = c("table", "logical"),
-  ...
-)
-
-\method{scaling}{semid2}(
   x,
   call = "sem",
   include.msgs = TRUE,

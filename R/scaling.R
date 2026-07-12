@@ -64,7 +64,6 @@ scaling <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
   UseMethod("scaling")
 }
 
-#' @rdname scaling
 #' @export
 scaling.semid <- function(x, call = "sem", include.msgs = TRUE, lv = NULL, 
                           return.type = c("object", "logical"), ...) {
@@ -87,7 +86,6 @@ scaling.lavaan <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
   return(scaling.data.frame(partable, include.msgs = include.msgs, lv = lv, return.type = return.type))
 }
 
-#' @rdname scaling
 #' @export
 scaling.character <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
                               return.type = c("object", "logical"), ...) {
@@ -116,7 +114,6 @@ scaling.character <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
   return(scaling.data.frame(partable, include.msgs = include.msgs, lv = lv, return.type = return.type))
 }
 
-#' @rdname scaling
 #' @export
 scaling.data.frame <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
                                return.type = c("object", "logical"), ...) {
@@ -260,15 +257,13 @@ scaling.data.frame <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
   }
 }
 
-
-#' @rdname scaling
 #' @export
 scaling.default <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
                             return.type = c("table", "logical"), ...) {
   stop("Unknown object type. Please supply a model string, lavaan parameter table, or fitted model object.")
 }
 
-#' @rdname scaling
+
 #' @export
 scaling.semid2 <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
                            return.type = c("object", "logical"), ...) {

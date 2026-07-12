@@ -3,7 +3,7 @@
 #' Structural Equation Modles (SEM) refer to the general class of models consisting
 #' of structural/directional relations, latent variables, or both.
 #' 
-#' \itemize{
+#' \describe{
 #'  \item{N_theta Rule}{The number of free parameters must be less than or equal to
 #'  the number of sample means, variances, and covariances. Necessary but not sufficient}
 #'  \item{Latent Scaling Rule}{In a model with latent variables, all latent variables
@@ -34,8 +34,8 @@ NULL
 #' @rdname sem_rules
 #' @keywords internal
 rule_sem_ntheta <- function(partable) {
-  # number of parameters
-  npar <- lavaan::lav_partable_npar(partable)
+  # number of parameters (internal function)
+  npar <- partable_npar(partable)
   # number of means, variances, and covariances
   ndat <- lavaan::lav_partable_ndat(partable)
   # build output

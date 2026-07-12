@@ -4,7 +4,7 @@
 #' but no structural paths between latent variables. CFA rules assume each 
 #' latent variable is correctly scaled (see \link[semID]{scaling}).
 #' 
-#' \itemize{
+#' \describe{
 #'  \item{Two Indicator Rule}{In a model with more than one latent variable, each
 #'  latent variable can have just two indicators if each indicator loads on exactly
 #'  one variable, none of the errors of the indicators are correlated, and each

@@ -2,25 +2,10 @@
 % Please edit documentation in R/id.R
 \name{id}
 \alias{id}
-\alias{id.semscale}
-\alias{id.lavaan}
-\alias{id.character}
-\alias{id.data.frame}
-\alias{id.default}
 \alias{id2}
 \title{Evaluate common Structural Equation Model (SEM) identification rules}
 \usage{
 id(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...)
-
-\method{id}{semscale}(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...)
-
-\method{id}{lavaan}(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...)
-
-\method{id}{character}(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...)
-
-\method{id}{data.frame}(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...)
-
-\method{id}{default}(x, include.msgs = TRUE, call = "sem", ...)
 
 id2(x, include.msgs = TRUE, call = "sem", ...)
 }

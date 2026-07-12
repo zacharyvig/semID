@@ -24,7 +24,7 @@ Structural Equation Modles (SEM) refer to the general class of models consisting
 of structural/directional relations, latent variables, or both.
 }
 \details{
-\itemize{
+\describe{
  \item{N_theta Rule}{The number of free parameters must be less than or equal to
  the number of sample means, variances, and covariances. Necessary but not sufficient}
  \item{Latent Scaling Rule}{In a model with latent variables, all latent variables
