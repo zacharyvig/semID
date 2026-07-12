@@ -15,6 +15,17 @@ test_that("id_mplus converts Mplus syntax strings", {
   expect_identical(out$partable, expected$partable)
 })
 
+test_that("id accepts lavaan syntax strings containing inp in the name", {
+  model <- paste(
+    "latentinp =~ x1 + x2",
+    "x1 ~~ x1",
+    "x2 ~~ x2",
+    sep = "\n"
+  )
+
+  expect_s3_class(id(model), "semid")
+})
+
 test_that("id_mplus reads Mplus input files", {
   model <- paste(
     "f1 BY x1*1 x2 x3;",

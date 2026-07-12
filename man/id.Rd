@@ -46,14 +46,14 @@ correspond to rules, and columns include "Pass" (did the rule pass?), "Necessary
 sufficient for identification?). These columns can take values "Yes", "No",
 or be left blank in the case of NA values.
 
-If the user set the \code{warn} argument to "TRUE" (which is the default),
-a column labeled "Warning" is appended to the table, and an output section called
-"Warnings" is printed below the table. Warnings include why a rule failed, why
+If the user set the \code{include.msgs} argument to "TRUE" (which is the default),
+a column labeled "Messages" is appended to the table, and an output section called
+"Messages" is printed below the table. Messages include why a rule failed, why
 a rule is not applicable to the current model, or why the necessary/sufficient
 conditions may not apply as usual.
 
-Warnings are identified by a number, and corresponding warning numbers are listed
-in the "Warning" column of the table.
+Messages are identified by a number, and corresponding message numbers are listed
+in the "Messages" column of the table.
 
 \code{call} takes character values "lavaan", "sem", or "cfa", specifying which
 \code{lavaan} function the user intends to call (and thus which defaults should)

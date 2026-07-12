@@ -4,6 +4,6 @@
     fields = "Version"
   )[1]
   packageStartupMessage(
-    paste(pkgname, version, "is still in the development phase")
+    paste(pkgname, version, "is still in the development phase.\nPlease report any bugs or edge cases to the GitHub repository.")
   )
 }

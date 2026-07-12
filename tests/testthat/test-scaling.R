@@ -27,6 +27,21 @@ test_that("scaling returns logical and object outputs", {
   expect_identical(object_out$Scaling[[1]]$lv, "L1")
 })
 
+test_that("scaling does not treat a two-indicator factor with one fixed loading as scaled", {
+  model <- paste(
+    "f1 =~ x1 + x2",
+    "x1 ~~ x1",
+    "x2 ~~ x2",
+    sep = "\n"
+  )
+
+  out <- scaling(lavaan::lavaanify(model, warn = FALSE, auto = TRUE, model.type = "sem"),
+                 lv = "f1",
+                 return.type = "logical")
+
+  expect_identical(out, c(f1 = FALSE))
+})
+
 test_that("scaling printing shows success and failure details", {
   pass_out <- capture.output(
     print(

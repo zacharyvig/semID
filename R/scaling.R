@@ -26,16 +26,16 @@
 #'  parameter table
 #' @param return.type A character string specifying the type of output. Options
 #'  include "logical" (a logical vector specifying whether each latent variable is
-#'  correctly scaled) or "table" (a data frame with additional information about the
-#'  scaling of each latent variable). The latter is of type \code{scaling.table} and
+#'  correctly scaled) or "object" (an object with additional information about the
+#'  scaling of each latent variable). The latter is of type \code{semscale} and
 #'  has a custom print method for additional diagnosis of identification issues.
 #' @param ... Additional arguments passed to the \code{lavaanify} function from
 #'  \code{lavaan}. See \link[lavaan]{lavaanify} for more information. These are
 #'  only used when a model string is supplied. Otherwise, they are ignored.
 #'
-#' @return An object of class \code{scaling.table} (if \code{return.type = "table"})
-#' or a logical vector (if \code{return.type = "logical"}) indicating whether each
-#' latent variable is correctly scaled.
+#' @return An object of class \code{semscale} with all scaling information
+#' (if \code{return.type = "object"}), or a logical vector (if \code{return.type = "logical"})
+#' indicating whether each latent variable is correctly scaled.
 #'
 #' @export
 #' @name scaling
@@ -167,8 +167,8 @@ scaling.data.frame <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
     }
     # two-indicator case / no lv correlations
     two.ind <- sum(with(x, lhs == var & op == "=~")) == 2
-    cov.lv <- any(with(x, (lhs == var & rhs != var) |
-                         (rhs == var & lhs != var) & op == "~~"))
+    cov.lv <- any(with(x, ((lhs == var & rhs != var) |
+               (rhs == var & lhs != var)) & op == "~~"))
     if (two.ind && !cov.lv) {
       check0 <- sum(
         with(x, lhs == var & op == "=~" & free == 0)

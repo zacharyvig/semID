@@ -43,8 +43,8 @@ parameter table}
 
 \item{return.type}{A character string specifying the type of output. Options
 include "logical" (a logical vector specifying whether each latent variable is
-correctly scaled) or "table" (a data frame with additional information about the
-scaling of each latent variable). The latter is of type \code{scaling.table} and
+correctly scaled) or "object" (an object with additional information about the
+scaling of each latent variable). The latter is of type \code{semscale} and
 has a custom print method for additional diagnosis of identification issues.}
 
 \item{...}{Additional arguments passed to the \code{lavaanify} function from
@@ -52,9 +52,9 @@ has a custom print method for additional diagnosis of identification issues.}
 only used when a model string is supplied. Otherwise, they are ignored.}
 }
 \value{
-An object of class \code{scaling.table} (if \code{return.type = "table"})
-or a logical vector (if \code{return.type = "logical"}) indicating whether each
-latent variable is correctly scaled.
+An object of class \code{semscale} with a all scaling information
+(if \code{return.type = "object"}), or a logical vector (if \code{return.type = "logical"})
+indicating whether each latent variable is correctly scaled.
 }
 \description{
 This function checks whether latent variables in the model are scaled,
