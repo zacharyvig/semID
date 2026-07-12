@@ -185,4 +185,12 @@ add_rule_msgs <- function(msgs = NA_character_, new_msgs, levels = NULL) {
   out <- c(msgs[!is.na(msgs)], new_msgs)
   return(out)
 }
-  
+
+#' More advanced version of lavaan::lav_partable_npar() that accounts for equality constraints
+#' @noRd
+partable_npar <- function(partable) {
+  free_rows <- partable$free > 0
+  keys <- partable$label[free_rows]
+  keys[is.na(keys) | keys == ""] <- partable$plabel[free_rows][is.na(keys) | keys == ""]
+  length(unique(keys))
+}

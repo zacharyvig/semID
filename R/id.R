@@ -75,14 +75,12 @@ id <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
   UseMethod("id")
 }
 
-#' @rdname id
 #' @export
 id.semscale <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
   print(x)
   return(id.data.frame(x$partable, include.msgs = include.msgs, call = call, twostep = twostep, ...))
 }
 
-#' @rdname id
 #' @export
 id.lavaan <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
   dotdotdot <- list(...)
@@ -96,10 +94,12 @@ id.lavaan <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...
   return(id.data.frame(partable, include.msgs = include.msgs, call = call, twostep = twostep, ...))
 }
 
-#' @rdname id
 #' @export
 id.character <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
   dotdotdot <- list(...)
+  if (grepl(".inp", x)) {
+    stop("This looks like an Mplus input file. Did you mean to use `id_mplus()` instead?")
+  }
   if (isTRUE(dotdotdot$model.type == "efa")) {
     dotdotdot[["model.type"]] <- NULL
     warning("Only `model.type='sem'` is currently supported")
@@ -124,7 +124,6 @@ id.character <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, 
   return(id.data.frame(partable, include.msgs = include.msgs, call = call, twostep = twostep, ...))
 }
 
-#' @rdname id
 #' @export
 id.data.frame <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
   if (is.list(x) && !is.null(x$lhs) && is.null(x$mod.idx)) {
@@ -202,7 +201,6 @@ id.data.frame <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE,
 
 }
 
-#' @rdname id
 #' @export
 id.default <- function(x, include.msgs = TRUE, call = "sem", ...) {
   stop("Unknown model format. Please supply a model string, lavaan parameter table, or fitted model object.")
@@ -212,4 +210,22 @@ id.default <- function(x, include.msgs = TRUE, call = "sem", ...) {
 #' @export
 id2 <- function(x, include.msgs = TRUE, call = "sem", ...) {
   id(x, include.msgs = include.msgs, call = call, twostep = TRUE, ...)
+}
+
+#' Evaluate identification rules for an Mplus model
+#'
+#' This is a wrapper function for \code{\link{id}} that accomodates Mplus model syntax
+#' (as a string) or Mplus input files (with extension ".inp").
+#' 
+#' @param x A character string model in Mplus syntax, or a path to an Mplus input file.
+#' @inheritParams id
+#' 
+#' @export
+id_mplus <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE, ...) {
+  if (grepl(".inp", x)) {
+    lav <- lavaan::lav_mplus_lavaan(x)
+  } else {
+    lav <- lavaan::lav_mplus_syntax_model(x)
+  }
+  id(lav, include.msgs = include.msgs, call = call, twostep = twostep, ...)
 }
