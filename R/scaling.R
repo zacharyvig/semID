@@ -223,7 +223,7 @@ scaling.data.frame <- function(x, call = "sem", include.msgs = TRUE, lv = NULL,
     }
     scaling.methods <- c("Scaling indicator with fixed mean",
                          "Latent variable with fixed mean and variance",
-                         "Scaling indicator with fixed variance")
+                         "Scaling indicator with fixed latent variable variance")
     scaling.tables[[i]]$scaling.method <- scaling.methods[which(final_check)]
 
     if (!any(final_check)) {
