@@ -43,7 +43,7 @@ You can install the development version of semID from
 
 - `scaling()` prints output about how/why/why not latent variables in
   the model are scaled. It relays which indicator is the scaling
-  indicator (if applicalbe) and reasons why the latent variable is/is
+  indicator (if applicable) and reasons why the latent variable is/is
   not scaled.
 
 - `id2()` evaluates the two-step rule of identification for full SEMs
