@@ -133,10 +133,7 @@ id.data.frame <- function(x, include.msgs = TRUE, call = "sem", twostep = FALSE,
   }
 
   # STEP 1 - Classify model
-  model.type <- classify_model(partable)
-  if (is.na(model.type) | model.type == "mlm") {
-    stop("This model type is not currently supported")
-  }
+  model.type <- classify_model(partable) # errors are handled in this function
   if (call == "cfa" && model.type != "cfa") {
       warning("`sem()` or `lavaan()` may be more appropriate calls for this type of model")
   }

@@ -39,7 +39,7 @@ identified, the original SEM is identified. The `id2()` function prints the resu
 
 The core of the package was developed by Zach Vig, based on Ken Bollen's 'Elements of Structural Equation Models (SEMs)' (2026),
 with style inspiration from the `lavaan` package. Additionally, OpenAI's GPT 5.2 and 5.4 mini models were used to (a) edit functions
-and documentation for clarity, (b) implement the Depth-First Search algorithm for checking recursion, (c) help fix bugs, (d) help
+and documentation for clarity, (b) implement the Depth-First Search algorithm for checking recursion, (c) help fix bugs, and (d) help
 write the test suite.
 }
 
