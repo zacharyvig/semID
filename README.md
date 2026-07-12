@@ -35,24 +35,24 @@ You can install the development version of semID from
   you intend to fit a model (e.g., “sem”). Output includes whether the
   rule passed, whether the rule is necessary and/or sufficient for
   identification, and, if `include.msgs = TRUE`, information about why a
-  rule did or did not pass or if a rule is relevant for the particular type
-  of model. Messages are classified as “Info” (information about, e.g.,
-  why a rule is not relevant), “Reason” (explanation of why a rule did
-  not pass, but the rule was not necessary for identification), or
+  rule did or did not pass or if a rule is relevant for the particular
+  type of model. Messages are classified as “Info” (information about,
+  e.g., why a rule is not relevant), “Reason” (explanation of why a rule
+  did not pass, but the rule was not necessary for identification), or
   “WARNING” (explanation of why a necessary rule failed).
 
-- `scaling()` prints output about how, and if so why, latent variables in
-  the model are scaled. It relays which indicator is the scaling
+- `scaling()` prints output about how, and if so why, latent variables
+  in the model are scaled. It relays which indicator is the scaling
   indicator (if applicable) and reasons why the latent variable is or is
   not scaled.
 
 - `id2()` evaluates the two-step rule of identification for full SEMs
   only. This rule first converts the model into a confirmatory factor
-  analysis model by changing structural relationships to covariances,
-  evaluates the identification of the CFA, if identified, then converts
+  analysis model by changing structural relationships to covariances;
+  evaluates the identification of the CFA; then, if identified, converts
   the original model into a simultaneous equations model (treating
-  latent variables as observed), evaluates the identification of the
-  SimEM, and, if identified, confirms that the original model is
+  latent variables as observed); evaluates the identification of the
+  SimEM; and finally, if identified, confirms that the original model is
   identified. See Bollen’s *Elements of Structural Equation
   Models* (2026) for details.
 
