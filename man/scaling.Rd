@@ -52,7 +52,7 @@ has a custom print method for additional diagnosis of identification issues.}
 only used when a model string is supplied. Otherwise, they are ignored.}
 }
 \value{
-An object of class \code{semscale} with a all scaling information
+An object of class \code{semscale} with all scaling information
 (if \code{return.type = "object"}), or a logical vector (if \code{return.type = "logical"})
 indicating whether each latent variable is correctly scaled.
 }
