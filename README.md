@@ -41,10 +41,14 @@ You can install the development version of semID from
   did not pass, but the rule was not necessary for identification), or
   “WARNING” (explanation of why a necessary rule failed).
 
+> E.g., `id(my_model, include.msgs = TRUE, call = "sem")`
+
 - `scaling()` prints output about how, and if so why, latent variables
   in the model are scaled. It relays which indicator is the scaling
   indicator (if applicable) and reasons why the latent variable is or is
   not scaled.
+
+> E.g., `scaling(my_model, include.msgs = TRUE, call = "cfa")`
 
 - `id2()` evaluates the two-step rule of identification for full SEMs
   only. This rule first converts the model into a confirmatory factor
@@ -56,8 +60,11 @@ You can install the development version of semID from
   identified. See Bollen’s *Elements of Structural Equation
   Models* (2026) for details.
 
+> E.g., `id2(my_model, include.msgs = TRUE, call = "sem")`
+
 - Note that the package supports piping for comprehensive printing,
-  e.g., `id(my_model) |> scaling()`.
+
+> E.g., `id(my_model) |> scaling()` or `scaling(my_model) |> id()`
 
 ## Example
 

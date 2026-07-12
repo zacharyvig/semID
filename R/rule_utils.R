@@ -188,9 +188,15 @@ add_rule_msgs <- function(msgs = NA_character_, new_msgs, levels = NULL) {
 
 #' More advanced version of lavaan::lav_partable_npar() that accounts for equality constraints
 #' @noRd
-partable_npar <- function(partable) {
+ntheta <- function(partable) {
   free_rows <- partable$free > 0
   keys <- partable$label[free_rows]
   keys[is.na(keys) | keys == ""] <- partable$plabel[free_rows][is.na(keys) | keys == ""]
   length(unique(keys))
+}
+
+#' Wrapper for lavaan::lav_partable_ndat() in case it ever needs to be modified
+#' @noRd
+ndata <- function(partable) {
+  lavaan::lav_partable_ndat(partable)
 }

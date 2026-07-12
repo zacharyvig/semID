@@ -35,17 +35,17 @@ NULL
 #' @keywords internal
 rule_sem_ntheta <- function(partable) {
   # number of parameters (internal function)
-  npar <- partable_npar(partable)
+  ntheta <- ntheta(partable)
   # number of means, variances, and covariances
-  ndat <- lavaan::lav_partable_ndat(partable)
+  ndat <- ndata(partable)
   # build output
   rule <- "N_theta Rule"
-  pass <- isTRUE(npar <= ndat)
+  pass <- isTRUE(ntheta <= ndat)
   if (pass) {
     msgs <- NA
   } else {
     msgs <- add_rule_msgs(
-      new_msgs = sprintf("The number of free parameters (=%s) exceeds the number of means/variances/covariances (=%s)", npar, ndat),
+      new_msgs = sprintf("The number of free parameters (=%s) exceeds the number of means/variances/covariances (=%s)", ntheta, ndat),
       levels = "3"
     )
   }
